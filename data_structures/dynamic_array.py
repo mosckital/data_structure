@@ -1,6 +1,6 @@
-"""Custom implementation of a fixed length array.
+"""Custom implementation of a dynamic array.
 
-This module illustrates the foundation knowledge of a fixed length array by
+This module illustrates the foundation knowledge of a dynamic array by
 implementing it. It has no practical usage but only serves as an data structure
 exercise.
 """
@@ -8,31 +8,28 @@ from typing import TypeVar, Generic, Optional, Sequence
 
 
 KT = TypeVar('KT')
-"""type: The generic type to use in the Array definition."""
+"""The generic type to represent the type of the array element."""
 
-class Array(Generic[KT]):
+
+class DynamicArray(Generic[KT]):
     """
-    `Array[T](n)` -> a fixed length array of size `n` for values of type `T`.
+    `DynamicArray[T]` -> a dynamic array for values of type `T`.
 
-    All slots are initialised to `None`.
-
-    This is a custom implementation of a Fixed Length Array for learning
-    purpose. The implementation is based on a pre-allocated list of known length
-    and the length will keep unchanged. Only the creation of a list of given
-    length and access/assignment of element by index/subscription is permitted.
-
-    Args:
-        max_size: the maximum size of the array
+    This is a custom implementation of a Dynamic Array for learning purpose. The
+    implementation uses a list to store data, but only the creation of a list of
+    given length and access/assignment of element by index/subscription is
+    permitted.
 
     Attributes:
-        data (List[Optional[KT]]): a list of length max_size to store data
-        max_size (int): the max size of the array
+        data (List[Optional[KT]]): the list to store data
         curr_size (int): the current size of the array
     """
 
-    def __init__(self, max_size: int):
-        self.data = [None] * max_size
-        self.max_size = max_size
+    _BASE_LENGTH: int = 8
+    """The starting length of the internal list."""
+
+    def __init__(self):
+        self.data = [None] * self._BASE_LENGTH
         self.curr_size = 0
 
     def get_size(self) -> int:
@@ -88,10 +85,19 @@ class Array(Generic[KT]):
         Returns:
             True if insertion is successful or False otherwise
         """
-        if 0 <= idx <= self.curr_size < self.max_size:
-            for i in range(self.curr_size, idx, -1):
-                self.data[i] = self.data[i - 1]
-            self.data[idx] = val
+        if 0 <= idx <= self.curr_size:
+            if self.curr_size == len(self.data):
+                tmp = [None] * (2 * len(self.data))
+                for i in range(idx):
+                    tmp[i] = self.data[i]
+                tmp[idx] = val
+                for i in range(idx, self.curr_size):
+                    tmp[i + 1] = self.data[i]
+                self.data = tmp
+            else:
+                for i in range(self.curr_size, idx, -1):
+                    self.data[i] = self.data[i - 1]
+                self.data[idx] = val
             self.curr_size += 1
             return True
         return False
@@ -110,8 +116,16 @@ class Array(Generic[KT]):
             True if deletion is successful or False otherwise
         """
         if 0 <= idx < self.curr_size:
-            for i in range(idx, self.curr_size - 1):
-                self.data[i] = self.data[i + 1]
+            if self.curr_size * 4 <= len(self.data):
+                tmp = [None] * (len(self.data) // 2)
+                for i in range(idx):
+                    tmp[i] = self.data[i]
+                for i in range(idx, self.curr_size - 1):
+                    tmp[i] = self.data[i + 1]
+                self.data = tmp
+            else:
+                for i in range(idx, self.curr_size - 1):
+                    self.data[i] = self.data[i + 1]
             self.curr_size -= 1
             return True
         return False
@@ -142,4 +156,5 @@ class Array(Generic[KT]):
         Returns:
             A list containing all elements of the array in order
         """
+        # return a copy of the array instead the original
         return [self.data[i] for i in range(self.curr_size)]
