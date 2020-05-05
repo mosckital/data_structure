@@ -5,7 +5,7 @@ implementing it. It has no practical usage but only serves as an data structure
 exercise.
 """
 from typing import TypeVar, Generic, Optional, Sequence
-from data_structures.custom_sequence import CustomSequence
+from .custom_sequence import CustomSequence
 
 
 GT = TypeVar('GT')
@@ -121,19 +121,23 @@ class SinglyLinkedList(CustomSequence[GT]):
         Returns:
             `True` if insertion is successful or `False` otherwise
         """
+        # case to insert at the head, so no previous node
         if idx == 0:
             new_node = self.Node[GT](val)
             new_node.next = self.head
             self.head = new_node
             self.size += 1
             return True
-        node = self._node_at(idx - 1)
-        if node:
+        # get the previous node if index is valid
+        prev_node = self._node_at(idx - 1)
+        # insert if there is a previous node
+        if prev_node:
             new_node = self.Node[GT](val)
-            new_node.next = node.next
-            node.next = new_node
+            new_node.next = prev_node.next
+            prev_node.next = new_node
             self.size += 1
             return True
+        # previous node is None if index is invalid
         return False
 
     def delete_at(self, idx: int) -> bool:
@@ -149,17 +153,19 @@ class SinglyLinkedList(CustomSequence[GT]):
         Returns:
             `True` if deletion is successful or `False` otherwise
         """
-        if not self.size:
-            return False
-        if idx == 0:
+        # case to delete the head if it exists, so no previous node
+        if idx == 0 and self.size > 0:
             self.head = self.head.next
             self.size -= 1
             return True
+        # get the previous node if index is valid
         prev_node = self._node_at(idx - 1)
+        # delete if there is a previous node
         if prev_node and prev_node.next:
             prev_node.next = prev_node.next.next
             self.size -= 1
             return True
+        # previous node is None if index is invalid
         return False
 
     def update_at(self, idx: int, val: GT) -> bool:
@@ -198,13 +204,16 @@ class SinglyLinkedList(CustomSequence[GT]):
         Returns:
             The popped value or `None` if empty
         """
+        # no way to pop element if the list is empty
         if self.size == 0:
             return None
+        # case of only one node
         if self.size == 1:
             val = self.head.val
             self.head = None
             self.size = 0
             return val
+        # case of multiple nodes
         prev_node = self._node_at(self.size - 2)
         val = prev_node.next.val
         prev_node.next = prev_node.next.next

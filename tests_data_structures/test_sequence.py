@@ -11,7 +11,8 @@ operation. The results and stored data should always be the same.
 """
 from random import choice, randint
 import pytest
-from data_structures import FixedArray, DynamicArray, SinglyLinkedList
+from data_structures.sequence import FixedArray, DynamicArray, \
+    SinglyLinkedList, DoublyLinkedList
 from .ref_array import RefArray, Op
 
 
@@ -172,6 +173,21 @@ class TestSequenceImpl():
         """
         # the array implementation to test
         arr = SinglyLinkedList[int]()
+        # the reference array implementation
+        alt = RefArray()
+        # randomly test the operations
+        self._check_op_randomly(arr, alt, n_ops)
+
+    @pytest.mark.parametrize(
+        'n_ops',
+        [100, 1000, 10000],
+    )
+    def test_doubly_linked_list(self, n_ops: int):
+        """
+        Test the correctness of the DoublyLinkedList class.
+        """
+        # the array implementation to test
+        arr = DoublyLinkedList[int]()
         # the reference array implementation
         alt = RefArray()
         # randomly test the operations

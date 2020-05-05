@@ -8,7 +8,7 @@ structures.
 """
 from enum import Enum
 from typing import TypeVar, Optional, List, Any
-from data_structures import CustomSequence
+from data_structures.sequence import CustomSequence
 
 
 class Op(Enum):
