@@ -4,13 +4,15 @@ This module illustrates the foundation knowledge of a fixed length array by
 implementing it. It has no practical usage but only serves as an data structure
 exercise.
 """
-from typing import TypeVar, Generic, Optional, Sequence
+from typing import TypeVar, Optional, Sequence
+from .custom_sequence import CustomSequence
 
 
-KT = TypeVar('KT')
+GT = TypeVar('GT')
 """type: The generic type to use in the Array definition."""
 
-class Array(Generic[KT]):
+
+class FixedArray(CustomSequence[GT]):
     """
     `Array[T](n)` -> a fixed length array of size `n` for values of type `T`.
 
@@ -31,6 +33,7 @@ class Array(Generic[KT]):
     """
 
     def __init__(self, max_size: int):
+        super().__init__()
         self.data = [None] * max_size
         self.max_size = max_size
         self.curr_size = 0
@@ -44,7 +47,7 @@ class Array(Generic[KT]):
         """
         return self.curr_size
 
-    def index_of(self, val: KT) -> int:
+    def index_of(self, val: GT) -> int:
         """
         Get the index of a value, or -1 if not found.
 
@@ -59,7 +62,7 @@ class Array(Generic[KT]):
                 return i
         return -1
 
-    def value_at(self, idx: int) -> Optional[KT]:
+    def value_at(self, idx: int) -> Optional[GT]:
         """
         Get the value at the given index.
 
@@ -67,13 +70,13 @@ class Array(Generic[KT]):
             idx: the index to fetch
 
         Returns:
-            The value at the given index or None if index not valid
+            The value at the given index or `None` if index not valid
         """
         if 0 <= idx < self.curr_size:
             return self.data[idx]
         return None
 
-    def insert_at(self, idx: int, val: KT) -> bool:
+    def insert_at(self, idx: int, val: GT) -> bool:
         """
         Insert a value at the given index.
 
@@ -86,7 +89,7 @@ class Array(Generic[KT]):
             val: the value to insert
 
         Returns:
-            True if insertion is successful or False otherwise
+            `True` if insertion is successful or `False` otherwise
         """
         if 0 <= idx <= self.curr_size < self.max_size:
             for i in range(self.curr_size, idx, -1):
@@ -107,7 +110,7 @@ class Array(Generic[KT]):
             idx: the index to perform deletion
 
         Returns:
-            True if deletion is successful or False otherwise
+            `True` if deletion is successful or `False` otherwise
         """
         if 0 <= idx < self.curr_size:
             for i in range(idx, self.curr_size - 1):
@@ -116,7 +119,7 @@ class Array(Generic[KT]):
             return True
         return False
 
-    def update_at(self, idx: int, val: KT) -> bool:
+    def update_at(self, idx: int, val: GT) -> bool:
         """
         Update an element at the given index by the given value.
 
@@ -128,14 +131,39 @@ class Array(Generic[KT]):
             val: the new value
 
         Returns:
-            True if update is successful or False otherwise
+            `True` if update is successful or `False` otherwise
         """
         if 0 <= idx < self.curr_size:
             self.data[idx] = val
             return True
         return False
 
-    def traverse(self) -> Sequence[KT]:
+    def push(self, val: GT) -> None:
+        """
+        Push a value into the array's end.
+
+        Note:
+            Nothing will happen if the array is already full.
+
+        Args:
+            val: the value to push in
+        """
+        self.insert_at(self.curr_size, val)
+
+    def pop(self) -> Optional[GT]:
+        """
+        Pop a value out of the array's end and return the value.
+
+        Returns:
+            The popped value or `None` if empty array
+        """
+        if not self.curr_size:
+            return None
+        val = self.data[self.curr_size - 1]
+        self.delete_at(self.curr_size - 1)
+        return val
+
+    def traverse(self) -> Sequence[GT]:
         """
         Traverse all elements in the array and return them in a list.
 
