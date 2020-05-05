@@ -4,14 +4,15 @@ This module illustrates the foundation knowledge of a dynamic array by
 implementing it. It has no practical usage but only serves as an data structure
 exercise.
 """
-from typing import TypeVar, Generic, Optional, Sequence
+from typing import TypeVar, Optional, Sequence
+from .custom_sequence import CustomSequence
 
 
-KT = TypeVar('KT')
+GT = TypeVar('GT')
 """The generic type to represent the type of the array element."""
 
 
-class DynamicArray(Generic[KT]):
+class DynamicArray(CustomSequence[GT]):
     """
     `DynamicArray[T]` -> a dynamic array for values of type `T`.
 
@@ -21,7 +22,7 @@ class DynamicArray(Generic[KT]):
     permitted.
 
     Attributes:
-        data (List[Optional[KT]]): the list to store data
+        data (List[Optional[GT]]): the list to store data
         curr_size (int): the current size of the array
     """
 
@@ -29,6 +30,7 @@ class DynamicArray(Generic[KT]):
     """The starting length of the internal list."""
 
     def __init__(self):
+        super().__init__()
         self.data = [None] * self._BASE_LENGTH
         self.curr_size = 0
 
@@ -41,7 +43,7 @@ class DynamicArray(Generic[KT]):
         """
         return self.curr_size
 
-    def index_of(self, val: KT) -> int:
+    def index_of(self, val: GT) -> int:
         """
         Get the index of a value, or -1 if not found.
 
@@ -56,7 +58,7 @@ class DynamicArray(Generic[KT]):
                 return i
         return -1
 
-    def value_at(self, idx: int) -> Optional[KT]:
+    def value_at(self, idx: int) -> Optional[GT]:
         """
         Get the value at the given index.
 
@@ -64,26 +66,25 @@ class DynamicArray(Generic[KT]):
             idx: the index to fetch
 
         Returns:
-            The value at the given index or None if index not valid
+            The value at the given index or `None` if index not valid
         """
         if 0 <= idx < self.curr_size:
             return self.data[idx]
         return None
 
-    def insert_at(self, idx: int, val: KT) -> bool:
+    def insert_at(self, idx: int, val: GT) -> bool:
         """
         Insert a value at the given index.
 
         Note:
-            The value will not be inserted if the index is not valid or the
-            array is already full.
+            The value will not be inserted if the index is not valid
 
         Args:
             idx: the index to insert at
             val: the value to insert
 
         Returns:
-            True if insertion is successful or False otherwise
+            `True` if insertion is successful or `False` otherwise
         """
         if 0 <= idx <= self.curr_size:
             if self.curr_size == len(self.data):
@@ -113,7 +114,7 @@ class DynamicArray(Generic[KT]):
             idx: the index to perform deletion
 
         Returns:
-            True if deletion is successful or False otherwise
+            `True` if deletion is successful or `False` otherwise
         """
         if 0 <= idx < self.curr_size:
             if self.curr_size * 4 <= len(self.data):
@@ -130,7 +131,7 @@ class DynamicArray(Generic[KT]):
             return True
         return False
 
-    def update_at(self, idx: int, val: KT) -> bool:
+    def update_at(self, idx: int, val: GT) -> bool:
         """
         Update an element at the given index by the given value.
 
@@ -142,14 +143,39 @@ class DynamicArray(Generic[KT]):
             val: the new value
 
         Returns:
-            True if update is successful or False otherwise
+            `True` if update is successful or `False` otherwise
         """
         if 0 <= idx < self.curr_size:
             self.data[idx] = val
             return True
         return False
 
-    def traverse(self) -> Sequence[KT]:
+    def push(self, val: GT) -> None:
+        """
+        Push a value into the array's end.
+
+        Note:
+            Nothing will happen if the array is already full.
+
+        Args:
+            val: the value to push in
+        """
+        self.insert_at(self.curr_size, val)
+
+    def pop(self) -> Optional[GT]:
+        """
+        Pop a value out of the array's end and return the value.
+
+        Returns:
+            The popped value or `None` if empty array
+        """
+        if not self.curr_size:
+            return None
+        val = self.data[self.curr_size - 1]
+        self.delete_at(self.curr_size - 1)
+        return val
+
+    def traverse(self) -> Sequence[GT]:
         """
         Traverse all elements in the array and return them in a list.
 
