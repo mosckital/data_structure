@@ -4,15 +4,16 @@ This module illustrates the foundation knowledge of doubly linked list by
 implementing it. It has no practical usage but only serves as an data structure
 exercise.
 """
-from typing import TypeVar, Generic, Optional, Sequence
+from typing import TypeVar, Optional, Sequence
 from .custom_sequence import CustomSequence
+from .custom_linked_list import LinkedListMixin
 
 
 GT = TypeVar('GT')
 """type: The generic type to represent the element type of the linked lists."""
 
 
-class DoublyLinkedList(CustomSequence[GT]):
+class DoublyLinkedList(LinkedListMixin[GT], CustomSequence[GT]):
     """
     `DoublyLinkedList[T]()` -> an empty doubly linked list of type `T`
 
@@ -26,24 +27,8 @@ class DoublyLinkedList(CustomSequence[GT]):
         size (int): the size of the doubly linked list
     """
 
-    class Node(Generic[GT]):
-        """Simple plain class for the nodes in a doubly linked list.
-
-        `Node[T](val)` -> a node storing a value `val`
-
-        Args:
-            val (Optional[T]): the value to store, default to `None`
-
-        Attributes:
-            val (Optional[T]): the stored value
-            prev (Node[T]): the previous node
-            next (Node[T]): the next node
-        """
-
-        def __init__(self, val: GT):
-            self.val = val
-            self.prev = None
-            self.next = None
+    Node = LinkedListMixin.DoublyNode
+    """type: An alias for the correspondent node type."""
 
     def __init__(self):
         super().__init__()
@@ -79,26 +64,6 @@ class DoublyLinkedList(CustomSequence[GT]):
             i += 1
         return -1
 
-    def _node_at(self, idx: int) -> Optional[Node]:
-        """
-        Get the node at the given index.
-
-        Args:
-            idx: the index to fetch
-
-        Returns:
-            The node at the given index or `None` if index not valid
-        """
-        if idx < 0:
-            return None
-        i = 0
-        node = self.head
-        while node and i < idx:
-            node = node.next
-            i += 1
-        # node is None if idx >= self.size
-        return node
-
     def value_at(self, idx: int) -> Optional[GT]:
         """
         Get the value at the given index.
@@ -109,7 +74,7 @@ class DoublyLinkedList(CustomSequence[GT]):
         Returns:
             The value at the given index or `None` if index not valid
         """
-        node = self._node_at(idx)
+        node = self.node_at(idx)
         return node.val if node else None
 
     def insert_at(self, idx: int, val: GT) -> bool:
@@ -138,7 +103,7 @@ class DoublyLinkedList(CustomSequence[GT]):
             self.size += 1
             return True
         # get the previous node if index is valid
-        prev_node = self._node_at(idx - 1)
+        prev_node = self.node_at(idx - 1)
         # insert if there is a previous node
         if prev_node:
             new_node = self.Node[GT](val)
@@ -177,7 +142,7 @@ class DoublyLinkedList(CustomSequence[GT]):
             self.size -= 1
             return True
         # get the previous node if index is valid
-        prev_node = self._node_at(idx - 1)
+        prev_node = self.node_at(idx - 1)
         # delete if there is a previous node
         if prev_node and prev_node.next:
             prev_node.next = prev_node.next.next
@@ -204,7 +169,7 @@ class DoublyLinkedList(CustomSequence[GT]):
         Returns:
             `True` if update is successful or `False` otherwise
         """
-        node = self._node_at(idx)
+        node = self.node_at(idx)
         if node:
             node.val = val
             return True
