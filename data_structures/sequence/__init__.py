@@ -12,5 +12,6 @@ file name before the class name in the path.
 from .custom_sequence import CustomSequence
 from .fixed_array import FixedArray
 from .dynamic_array import DynamicArray
+from .custom_linked_list import LinkedListMixin
 from .singly_linked_list import SinglyLinkedList
 from .doubly_linked_list import DoublyLinkedList
