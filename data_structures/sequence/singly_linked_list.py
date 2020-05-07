@@ -18,8 +18,10 @@ class SinglyLinkedList(LinkedListMixin[GT], CustomSequence[GT]):
     `SinglyLinkedList[T]()` -> an empty singly linked list of type `T`
 
     This is a custom implementation of a singly linked list for learning
-    purpose. The implementation uses a internal class `Node` to encapsulate the
-    nodes in the list.
+    purpose.
+
+    The implementation uses the `Node` implemented inside `LinkedListMixin` as
+    the nodes in the list.
 
     Attributes:
         head (Optional[Node[T]]): the head node of the singly linked list
