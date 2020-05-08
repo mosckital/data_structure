@@ -14,7 +14,7 @@ GT = TypeVar('GT')
 
 class DynamicArray(CustomSequence[GT]):
     """
-    `DynamicArray[T]` -> a dynamic array for values of type `T`.
+    `DynamicArray[T]()` -> a dynamic array for values of type `T`.
 
     This is a custom implementation of a Dynamic Array for learning purpose. The
     implementation uses a list to store data, but only the creation of a list of
