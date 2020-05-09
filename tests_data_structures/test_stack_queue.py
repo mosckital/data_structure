@@ -12,7 +12,7 @@ from enum import Enum
 from random import choice
 import pytest
 from data_structures.sequence import CustomStack, LinkedStack, ArrayStack, \
-    CustomQueue, LinkedQueue, ArrayQueue
+    QueuedStack, CustomQueue, LinkedQueue, ArrayQueue, StackedQueue
 
 
 CustomStackQueue = Union[CustomStack, CustomQueue]
@@ -104,6 +104,16 @@ class TestStackQueue():
         'n_ops',
         [100, 1000, 10000],
     )
+    def test_queued_stack(self, n_ops: int):
+        """Test the correctness of the QueuedStack class."""
+        tar = QueuedStack[int]()
+        ref = deque()
+        self._check_op_randomly(tar, ref, n_ops)
+
+    @pytest.mark.parametrize(
+        'n_ops',
+        [100, 1000, 10000],
+    )
     def test_linked_queue(self, n_ops: int):
         """Test the correctness of the LinkedQueue class."""
         tar = LinkedQueue[int]()
@@ -117,5 +127,15 @@ class TestStackQueue():
     def test_array_queue(self, n_ops: int):
         """Test the correctness of the ArrayQueue class."""
         tar = ArrayQueue[int]()
+        ref = deque()
+        self._check_op_randomly(tar, ref, n_ops)
+
+    @pytest.mark.parametrize(
+        'n_ops',
+        [100, 1000, 10000],
+    )
+    def test_stacked_queue(self, n_ops: int):
+        """Test the correctness of the StackedQueue class."""
+        tar = StackedQueue[int]()
         ref = deque()
         self._check_op_randomly(tar, ref, n_ops)

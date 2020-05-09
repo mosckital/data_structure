@@ -21,7 +21,9 @@ from .doubly_linked_list import DoublyLinkedList
 from .custom_stack import CustomStack
 from .linked_stack import LinkedStack
 from .array_stack import ArrayStack
+from .queued_stack import QueuedStack
 # queue
 from .custom_queue import CustomQueue
 from .linked_queue import LinkedQueue
 from .array_queue import ArrayQueue
+from .stacked_queue import StackedQueue
