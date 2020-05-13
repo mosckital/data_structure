@@ -9,6 +9,7 @@ verify_ssl = true
 pytest = "*"
 numpy = "*"
 pylint = "*"
+binarytree = "*"
 
 [requires]
 python_version = "3.7"
