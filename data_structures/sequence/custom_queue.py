@@ -1,4 +1,3 @@
-
 """The abstract base class for all the custom implementations of a queue."""
 from typing import TypeVar, Generic, Optional, Sequence
 from abc import ABC, abstractmethod
