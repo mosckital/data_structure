@@ -11,19 +11,19 @@ file name before the class name in the path.
 """
 # array
 from .custom_sequence import CustomSequence
-from .fixed_array import FixedArray
-from .dynamic_array import DynamicArray
+from .array.fixed_array import FixedArray
+from .array.dynamic_array import DynamicArray
 # linked list
-from .custom_linked_list import LinkedListMixin
-from .singly_linked_list import SinglyLinkedList
-from .doubly_linked_list import DoublyLinkedList
+from .linked_list.custom_linked_list import LinkedListMixin
+from .linked_list.singly_linked_list import SinglyLinkedList
+from .linked_list.doubly_linked_list import DoublyLinkedList
 # stack
-from .custom_stack import CustomStack
-from .linked_stack import LinkedStack
-from .array_stack import ArrayStack
-from .queued_stack import QueuedStack
+from .queue_stack.custom_stack import CustomStack
+from .queue_stack.linked_stack import LinkedStack
+from .queue_stack.array_stack import ArrayStack
+from .queue_stack.queued_stack import QueuedStack
 # queue
-from .custom_queue import CustomQueue
-from .linked_queue import LinkedQueue
-from .array_queue import ArrayQueue
-from .stacked_queue import StackedQueue
+from .queue_stack.custom_queue import CustomQueue
+from .queue_stack.linked_queue import LinkedQueue
+from .queue_stack.array_queue import ArrayQueue
+from .queue_stack.stacked_queue import StackedQueue

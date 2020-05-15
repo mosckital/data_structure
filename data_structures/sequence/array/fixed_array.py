@@ -1,37 +1,39 @@
-"""Custom implementation of a dynamic array.
+"""Custom implementation of a fixed length array.
 
-This module illustrates the foundation knowledge of a dynamic array by
+This module illustrates the foundation knowledge of a fixed length array by
 implementing it. It has no practical usage but only serves as an data structure
 exercise.
 """
 from typing import TypeVar, Optional, Sequence
-from .custom_sequence import CustomSequence
+from ..custom_sequence import CustomSequence
 
 
 GT = TypeVar('GT')
-"""The generic type to represent the type of the array element."""
+"""type: The generic type to use in the Array definition."""
 
 
-class DynamicArray(CustomSequence[GT]):
+class FixedArray(CustomSequence[GT]):
     """
-    `DynamicArray[T]()` -> a dynamic array for values of type `T`.
+    `Array[T](n)` -> a fixed length array of size `n` for values of type `T`.
 
-    This is a custom implementation of a Dynamic Array for learning purpose. The
-    implementation uses a list to store data, but only the creation of a list of
-    given length and access/assignment of element by index/subscription is
-    permitted.
+    All slots are initialised to `None`.
+
+    This is a custom implementation of a Fixed Length Array for learning
+    purpose. The implementation is based on a pre-allocated list of known length
+    and the length will keep unchanged. Only the creation of a list of given
+    length and access/assignment of element by index/subscription is permitted.
+
+    Args:
+        max_size: the maximum size of the array
 
     Attributes:
-        data (List[Optional[GT]]): the list to store data
+        data (List[Optional[KT]]): a list of length max_size to store data
         curr_size (int): the current size of the array
     """
 
-    _BASE_LENGTH: int = 8
-    """The starting length of the internal list."""
-
-    def __init__(self):
+    def __init__(self, max_size: int):
         super().__init__()
-        self.data = [None] * self._BASE_LENGTH
+        self.data = [None] * max_size
         self.curr_size = 0
 
     def get_size(self) -> int:
@@ -77,7 +79,8 @@ class DynamicArray(CustomSequence[GT]):
         Insert a value at the given index.
 
         Note:
-            The value will not be inserted if the index is not valid
+            The value will not be inserted if the index is not valid or the
+            array is already full.
 
         Args:
             idx: the index to insert at
@@ -86,19 +89,10 @@ class DynamicArray(CustomSequence[GT]):
         Returns:
             `True` if insertion is successful or `False` otherwise
         """
-        if 0 <= idx <= self.curr_size:
-            if self.curr_size == len(self.data):
-                tmp = [None] * (2 * len(self.data))
-                for i in range(idx):
-                    tmp[i] = self.data[i]
-                tmp[idx] = val
-                for i in range(idx, self.curr_size):
-                    tmp[i + 1] = self.data[i]
-                self.data = tmp
-            else:
-                for i in range(self.curr_size, idx, -1):
-                    self.data[i] = self.data[i - 1]
-                self.data[idx] = val
+        if 0 <= idx <= self.curr_size < len(self.data):
+            for i in range(self.curr_size, idx, -1):
+                self.data[i] = self.data[i - 1]
+            self.data[idx] = val
             self.curr_size += 1
             return True
         return False
@@ -117,16 +111,8 @@ class DynamicArray(CustomSequence[GT]):
             `True` if deletion is successful or `False` otherwise
         """
         if 0 <= idx < self.curr_size:
-            if self.curr_size * 4 <= len(self.data):
-                tmp = [None] * (len(self.data) // 2)
-                for i in range(idx):
-                    tmp[i] = self.data[i]
-                for i in range(idx, self.curr_size - 1):
-                    tmp[i] = self.data[i + 1]
-                self.data = tmp
-            else:
-                for i in range(idx, self.curr_size - 1):
-                    self.data[i] = self.data[i + 1]
+            for i in range(idx, self.curr_size - 1):
+                self.data[i] = self.data[i + 1]
             self.curr_size -= 1
             return True
         return False

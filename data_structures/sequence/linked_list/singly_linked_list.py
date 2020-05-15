@@ -5,7 +5,7 @@ implementing it. It has no practical usage but only serves as an data structure
 exercise.
 """
 from typing import TypeVar, Optional, Sequence
-from .custom_sequence import CustomSequence
+from ..custom_sequence import CustomSequence
 from .custom_linked_list import LinkedListMixin
 
 

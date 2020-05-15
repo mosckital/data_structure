@@ -7,7 +7,7 @@ practical usage.
 """
 from typing import TypeVar, Optional, Sequence
 from .custom_stack import CustomStack
-from .custom_linked_list import LinkedListMixin
+from .. import LinkedListMixin
 
 
 GT = TypeVar('GT')
