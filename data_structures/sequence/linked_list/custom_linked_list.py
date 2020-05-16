@@ -5,6 +5,7 @@ This module defines two common operations of a linked list and the node classes
 for the singly and doubly linked lists. All these classes are only implemented
 for learning purpose and have no practical usage.
 """
+from __future__ import annotations
 from typing import TypeVar, Generic, Optional
 
 
@@ -27,6 +28,20 @@ class LinkedListMixin(Generic[GT]):
             self.val = val
             self.next = None
 
+        def insert_after(self, prev: LinkedListMixin.Node[GT]) -> None:
+            if not self._check_prev(prev):
+                raise ValueError("Invalid 'prev'!")
+            self.next = prev.next
+            prev.next = self
+
+        def delete_after(self, prev: LinkedListMixin.Node[GT]) -> None:
+            if not self._check_prev(prev):
+                raise ValueError("Invalid 'prev'!")
+            prev.next = self.next
+
+        def _check_prev(self, prev: LinkedListMixin.Node[GT]) -> bool:
+            return prev and prev.next == self
+
     class DoublyNode(Generic[GT], Node[GT]):
         """
         The basic node structure for a doubly linked list.
@@ -35,6 +50,17 @@ class LinkedListMixin(Generic[GT]):
         def __init__(self, val: GT):
             super().__init__(val)
             self.prev = None
+
+        def insert_after(self, prev: LinkedListMixin.DoublyNode[GT]) -> None:
+            super().insert_after(prev)
+            self.prev = prev
+            if self.next:
+                self.next.prev = self
+
+        def delete_after(self, prev: LinkedListMixin.DoublyNode[GT]) -> None:
+            super().delete_after(prev)
+            if self.next:
+                self.next.prev = self.prev
 
     def __init__(self):
         self.head = None
