@@ -1,4 +1,4 @@
-"""The implementation of a size function mixin for the stack or queue type data
+"""The implementation of methods about size for the stack or queue type data
 structures.
 
 This module defines the common operations about the size for a stack or a queue.
