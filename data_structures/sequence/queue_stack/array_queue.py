@@ -7,13 +7,14 @@ practical usage.
 """
 from typing import TypeVar, Optional, Sequence
 from .custom_queue import CustomQueue
+from .size_mixin import SizeMixin
 
 
 GT = TypeVar('GT')
 """type: The generic type to represent the element type of the queue."""
 
 
-class ArrayQueue(CustomQueue[GT]):
+class ArrayQueue(SizeMixin, CustomQueue[GT]):
     """
     `ArrayQueue[T]()` -> a queue based on array for values of type `T`.
 
@@ -36,25 +37,8 @@ class ArrayQueue(CustomQueue[GT]):
     def __init__(self):
         super().__init__()
         self.data = [None] * self.BASE_SIZE
-        self.size = 0
         self.head = 0
         self.tail = -1
-
-    def is_empty(self) -> bool:
-        """Check if the queue is empty.
-
-        Returns:
-            `True` if the queue is empty or `False` otherwise
-        """
-        return self.size == 0
-
-    def get_size(self) -> int:
-        """Get the size of the queue.
-
-        Returns:
-            The size of the queue
-        """
-        return self.size
 
     def push(self, val: GT) -> None:
         """Push a value into the end of the queue.

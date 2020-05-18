@@ -8,13 +8,14 @@ usage.
 from typing import TypeVar, Optional, Sequence
 from .custom_queue import CustomQueue
 from .linked_stack import LinkedStack
+from .size_mixin import SizeMixin
 
 
 GT = TypeVar('GT')
 """type: The generic type to represent the element type of the queue."""
 
 
-class StackedQueue(CustomQueue[GT]):
+class StackedQueue(SizeMixin, CustomQueue[GT]):
     """
     `StackedQueue[T]()` -> a queue based on stacks for values of type `T`.
 
@@ -34,23 +35,6 @@ class StackedQueue(CustomQueue[GT]):
         super().__init__()
         self.stack = LinkedStack[GT]()
         self.inverse = LinkedStack[GT]()
-        self.size = 0
-
-    def is_empty(self) -> bool:
-        """Check if the queue is empty.
-
-        Returns:
-            `True` if the queue is empty or `False` otherwise
-        """
-        return self.size == 0
-
-    def get_size(self) -> int:
-        """Get the size of the queue.
-
-        Returns:
-            The size of the queue
-        """
-        return self.size
 
     def push(self, val: GT) -> None:
         """Push a value into the end of the queue.
