@@ -6,14 +6,15 @@ and looks dumb, because it only serves as an data structure exercise and has no
 practical usage.
 """
 from typing import TypeVar, Optional, Sequence
-from .custom_stack import CustomStack
+from .custom_stack_queue import CustomStack
+from .size_mixin import SizeMixin
 
 
 GT = TypeVar('GT')
 """type: The generic type to represent the element type of the stack."""
 
 
-class ArrayStack(CustomStack[GT]):
+class ArrayStack(SizeMixin, CustomStack[GT]):
     """
     `ArrayStack[T]()` -> a stack based on array for values of type `T`.
 
@@ -33,23 +34,6 @@ class ArrayStack(CustomStack[GT]):
     def __init__(self):
         super().__init__()
         self.data = [None] * self._BASE_SIZE
-        self.size = 0
-
-    def is_empty(self) -> bool:
-        """Check if the stack is empty.
-
-        Returns:
-            `True` if the stack is empty or `False` otherwise
-        """
-        return self.size == 0
-
-    def get_size(self) -> int:
-        """Get the size of the stack.
-
-        Returns:
-            The size of the stack
-        """
-        return self.size
 
     def push(self, val: GT) -> None:
         """Push a value into the open end of the stack.

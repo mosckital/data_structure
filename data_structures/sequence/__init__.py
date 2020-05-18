@@ -11,19 +11,20 @@ file name before the class name in the path.
 """
 # array
 from .custom_sequence import CustomSequence
-from .fixed_array import FixedArray
-from .dynamic_array import DynamicArray
+from .array.fixed_array import FixedArray
+from .array.dynamic_array import DynamicArray
 # linked list
-from .custom_linked_list import LinkedListMixin
-from .singly_linked_list import SinglyLinkedList
-from .doubly_linked_list import DoublyLinkedList
+from .linked_list.custom_linked_list import LinkedListMixin
+from .linked_list.singly_linked_list import SinglyLinkedList
+from .linked_list.doubly_linked_list import DoublyLinkedList
+# abstract base classes for stack and queue
+from .stack_queue.custom_stack_queue import CustomStackQueue
+from .stack_queue.custom_stack_queue import CustomStack, CustomQueue
 # stack
-from .custom_stack import CustomStack
-from .linked_stack import LinkedStack
-from .array_stack import ArrayStack
-from .queued_stack import QueuedStack
+from .stack_queue.linked_stack import LinkedStack
+from .stack_queue.array_stack import ArrayStack
+from .stack_queue.queued_stack import QueuedStack
 # queue
-from .custom_queue import CustomQueue
-from .linked_queue import LinkedQueue
-from .array_queue import ArrayQueue
-from .stacked_queue import StackedQueue
+from .stack_queue.linked_queue import LinkedQueue
+from .stack_queue.array_queue import ArrayQueue
+from .stack_queue.stacked_queue import StackedQueue

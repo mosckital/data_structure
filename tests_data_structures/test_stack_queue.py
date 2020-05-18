@@ -7,16 +7,12 @@ or a queue/stack. This module tests the correctness of all these custom
 implementations.
 """
 from collections import deque
-from typing import Union
 from enum import Enum
 from random import choice
 import pytest
-from data_structures.sequence import CustomStack, LinkedStack, ArrayStack, \
-    QueuedStack, CustomQueue, LinkedQueue, ArrayQueue, StackedQueue
-
-
-CustomStackQueue = Union[CustomStack, CustomQueue]
-"""type: either a stack or a queue."""
+from data_structures.sequence import CustomStackQueue, CustomStack
+from data_structures.sequence import LinkedStack, ArrayStack, QueuedStack
+from data_structures.sequence import LinkedQueue, ArrayQueue, StackedQueue
 
 
 class Op(Enum):

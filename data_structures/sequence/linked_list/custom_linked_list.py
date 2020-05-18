@@ -5,6 +5,7 @@ This module defines two common operations of a linked list and the node classes
 for the singly and doubly linked lists. All these classes are only implemented
 for learning purpose and have no practical usage.
 """
+from __future__ import annotations
 from typing import TypeVar, Generic, Optional
 
 
@@ -19,6 +20,7 @@ class LinkedListMixin(Generic[GT]):
     """
 
     class Node(Generic[GT]):
+        # pylint: disable=too-few-public-methods
         """
         The basic node structure for a singly linked list.
         """
@@ -28,6 +30,7 @@ class LinkedListMixin(Generic[GT]):
             self.next = None
 
     class DoublyNode(Generic[GT], Node[GT]):
+        # pylint: disable=too-few-public-methods
         """
         The basic node structure for a doubly linked list.
         """

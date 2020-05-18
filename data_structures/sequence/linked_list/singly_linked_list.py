@@ -5,7 +5,7 @@ implementing it. It has no practical usage but only serves as an data structure
 exercise.
 """
 from typing import TypeVar, Optional, Sequence
-from .custom_sequence import CustomSequence
+from ..custom_sequence import CustomSequence
 from .custom_linked_list import LinkedListMixin
 
 
@@ -77,6 +77,18 @@ class SinglyLinkedList(LinkedListMixin[GT], CustomSequence[GT]):
         node = self.node_at(idx)
         return node.val if node else None
 
+    def _insert_head(self, val: GT) -> None:
+        new_head = self.Node[GT](val)
+        new_head.next = self.head
+        self.head = new_head
+        self.size += 1
+
+    def _insert_after(self, val: GT, prev_node: Node[GT]) -> None:
+        new_node = self.Node[GT](val)
+        new_node.next = prev_node.next
+        prev_node.next = new_node
+        self.size += 1
+
     def insert_at(self, idx: int, val: GT) -> bool:
         """
         Insert a value at the given index.
@@ -93,22 +105,24 @@ class SinglyLinkedList(LinkedListMixin[GT], CustomSequence[GT]):
         """
         # case to insert at the head, so no previous node
         if idx == 0:
-            new_node = self.Node[GT](val)
-            new_node.next = self.head
-            self.head = new_node
-            self.size += 1
+            self._insert_head(val)
             return True
         # get the previous node if index is valid
         prev_node = self.node_at(idx - 1)
         # insert if there is a previous node
         if prev_node:
-            new_node = self.Node[GT](val)
-            new_node.next = prev_node.next
-            prev_node.next = new_node
-            self.size += 1
+            self._insert_after(val, prev_node)
             return True
         # previous node is None if index is invalid
         return False
+
+    def _delete_head(self) -> None:
+        self.head = self.head.next
+        self.size -= 1
+
+    def _delete_after(self, prev_node: Node[GT]) -> None:
+        prev_node.next = prev_node.next.next
+        self.size -= 1
 
     def delete_at(self, idx: int) -> bool:
         """
@@ -125,15 +139,13 @@ class SinglyLinkedList(LinkedListMixin[GT], CustomSequence[GT]):
         """
         # case to delete the head if it exists, so no previous node
         if idx == 0 and self.size > 0:
-            self.head = self.head.next
-            self.size -= 1
+            self._delete_head()
             return True
         # get the previous node if index is valid
         prev_node = self.node_at(idx - 1)
         # delete if there is a previous node
         if prev_node and prev_node.next:
-            prev_node.next = prev_node.next.next
-            self.size -= 1
+            self._delete_after(prev_node)
             return True
         # previous node is None if index is invalid
         return False
@@ -180,14 +192,12 @@ class SinglyLinkedList(LinkedListMixin[GT], CustomSequence[GT]):
         # case of only one node
         if self.size == 1:
             val = self.head.val
-            self.head = None
-            self.size = 0
+            self._delete_head()
             return val
         # case of multiple nodes
         prev_node = self.node_at(self.size - 2)
         val = prev_node.next.val
-        prev_node.next = prev_node.next.next
-        self.size -= 1
+        self._delete_after(prev_node)
         return val
 
     def traverse(self) -> Sequence[GT]:
