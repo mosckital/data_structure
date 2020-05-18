@@ -17,6 +17,7 @@ GT = TypeVar('GT')
 
 
 class DoublyLinkedList(SinglyLinkedList[GT]):
+    # pylint: disable=duplicate-code
     """
     `DoublyLinkedList[T]()` -> an empty doubly linked list of type `T`
 
@@ -40,83 +41,35 @@ class DoublyLinkedList(SinglyLinkedList[GT]):
         super().__init__()
         self.tail = None
 
-    def insert_at(self, idx: int, val: GT) -> bool:
-        """
-        Insert a value at the given index.
+    def _insert_head(self, val: GT) -> None:
+        super()._insert_head(val)
+        if self.head.next:
+            self.head.next.prev = self.head
+        else:
+            self.tail = self.head
 
-        Note:
-            The value will not be inserted if the index is not valid.
+    def _insert_after(self, val: GT, prev_node: Node[GT]) -> None:
+        super()._insert_after(val, prev_node)
+        new_node = prev_node.next
+        new_node.prev = prev_node
+        if new_node.next:
+            new_node.next.prev = new_node
+        else:
+            self.tail = new_node
 
-        Args:
-            idx: the index to insert at
-            val: the value to insert
+    def _delete_head(self) -> None:
+        super()._delete_head()
+        if self.head:
+            self.head.prev = None
+        else:
+            self.tail = None
 
-        Returns:
-            `True` if insertion is successful or `False` otherwise
-        """
-        # case to insert at the head, so no previous node
-        if idx == 0:
-            new_node = self.Node[GT](val)
-            new_node.next = self.head
-            if new_node.next:
-                new_node.next.prev = new_node
-            else:
-                self.tail = new_node
-            self.head = new_node
-            self.size += 1
-            return True
-        # get the previous node if index is valid
-        prev_node = self.node_at(idx - 1)
-        # insert if there is a previous node
-        if prev_node:
-            new_node = self.Node[GT](val)
-            new_node.next = prev_node.next
-            if new_node.next:
-                new_node.next.prev = new_node
-            else:
-                self.tail = new_node
-            new_node.prev = prev_node
-            new_node.prev.next = new_node
-            self.size += 1
-            return True
-        # previous node is None if index is invalid
-        return False
-
-    def delete_at(self, idx: int) -> bool:
-        """
-        Delete an element at the given index.
-
-        Note:
-            The deletion will not perform if the index is not valid.
-
-        Args:
-            idx: the index to perform deletion
-
-        Returns:
-            `True` if deletion is successful or `False` otherwise
-        """
-        # case to delete the head if it exists, so no previous node
-        if idx == 0 and self.size > 0:
-            if self.head.next:
-                self.head.next.prev = None
-            else:
-                self.tail = None
-            self.head = self.head.next
-            self.size -= 1
-            return True
-        # get the previous node if index is valid
-        prev_node = self.node_at(idx - 1)
-        # delete if there is a previous node
-        if prev_node and prev_node.next:
-            prev_node.next = prev_node.next.next
-            if prev_node.next:
-                prev_node.next.prev = prev_node
-            else:
-                self.tail = prev_node
-            self.size -= 1
-            return True
-        # previous node is None if index is invalid
-        return False
+    def _delete_after(self, prev_node: Node[GT]) -> None:
+        super()._delete_after(prev_node)
+        if prev_node.next:
+            prev_node.next.prev = prev_node
+        else:
+            self.tail = prev_node
 
     def push(self, val: GT) -> None:
         """
@@ -143,19 +96,13 @@ class DoublyLinkedList(SinglyLinkedList[GT]):
         Returns:
             The popped value or `None` if empty
         """
-        # no way to pop element if the list is empty
-        if self.size == 0:
-            return None
-        # case of only one node
-        if self.size == 1:
-            val = self.head.val
-            self.head = None
-            self.tail = None
-            self.size = 0
+        if self.size:
+            val = self.tail.val
+            self.tail = self.tail.prev
+            if self.tail:
+                self.tail.next = None
+            else:
+                self.head = None
+            self.size -= 1
             return val
-        # case of multiple nodes
-        val = self.tail.val
-        self.tail = self.tail.prev
-        self.tail.next = None
-        self.size -= 1
-        return val
+        return None

@@ -8,7 +8,7 @@ method does not. So only the push and traverse methods are implemented in this
 module and the pop method will be implemented by the actual class.
 """
 from typing import TypeVar, Generic, Sequence
-from .. import LinkedListMixin
+from ..linked_list.custom_linked_list import LinkedListMixin
 
 
 GT = TypeVar('GT')

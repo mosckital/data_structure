@@ -16,6 +16,7 @@ GT = TypeVar('GT')
 
 
 class LinkedStack(Generic[GT], LinkedMixin[GT], SizeMixin, CustomStack[GT]):
+    # pylint: disable=too-many-ancestors
     """
     `LinkedStack[T]()` -> a stack based on linked list for values of type `T`.
 
@@ -32,6 +33,12 @@ class LinkedStack(Generic[GT], LinkedMixin[GT], SizeMixin, CustomStack[GT]):
     """
 
     def pop(self) -> Optional[GT]:
+        # pylint: disable=all
+        # We have to disable all warning messages as only disable duplicate-code
+        # warning message does not work.
+        # The duplicate-code warning is caused by the identity of this function
+        # and the pop() of DoublyLinkedList. The radical reason of this
+        # duplication is that a LinkedStack is in fact a DoublyLinkedList.
         if self.size:
             val = self.tail.val
             self.tail = self.tail.prev

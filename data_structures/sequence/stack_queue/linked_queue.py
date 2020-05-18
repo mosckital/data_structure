@@ -16,6 +16,7 @@ GT = TypeVar('GT')
 
 
 class LinkedQueue(Generic[GT], LinkedMixin[GT], SizeMixin, CustomQueue[GT]):
+    # pylint: disable=too-many-ancestors
     """
     `LinkedQueue[T]()` -> a queue based on linked list for values of type `T`.
 
