@@ -6,7 +6,7 @@ and looks dumb, because it only serves as an data structure exercise and has no
 practical usage.
 """
 from typing import TypeVar, Optional, Sequence
-from .custom_queue import CustomQueue
+from .custom_stack_queue import CustomQueue
 from .size_mixin import SizeMixin
 
 

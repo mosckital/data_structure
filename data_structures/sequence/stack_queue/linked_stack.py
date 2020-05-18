@@ -1,37 +1,38 @@
-"""The custom implementation of a queue based on a linked list.
+"""The custom implementation of a stack based on a linked list.
 
-This module illustrates the foundation knowledge of implementing a queue using a
+This module illustrates the foundation knowledge of implementing a stack using a
 doubly linked list. The implementation does not use Python's language advantages
 and looks dumb, because it only serves as an data structure exercise and has no
 practical usage.
 """
 from typing import TypeVar, Optional, Sequence
-from .custom_queue import CustomQueue
+from .custom_stack_queue import CustomStack
 from .. import LinkedListMixin
 from .size_mixin import SizeMixin
 
 
 GT = TypeVar('GT')
-"""type: The generic type to represent the element type of the queue."""
+"""type: The generic type to represent the element type of the stack."""
 
 
-class LinkedQueue(SizeMixin, CustomQueue[GT]):
+class LinkedStack(SizeMixin, CustomStack[GT]):
     """
-    `LinkedQueue[T]()` -> a queue based on linked list for values of type `T`.
+    `LinkedStack[T]()` -> a stack based on linked list for values of type `T`.
 
-    This is a custom implementation of a queue based on a doubly linked list for
+    This is a custom implementation of a stack based on a doubly linked list for
     learning purpose.
 
     The implementation uses the `DoublyNode` implemented inside
     `LinkedListMixin` as the nodes in the list.
 
     Attributes:
-        head (Optional[Node[T]]): the head node of the linked queue
-        tail (Optional[Node[T]]): the tail node of the linked queue
-        size (int): the current size of the queue
+        head (Optional[Node[T]]): the head node of the linked stack
+        tail (Optional[Node[T]]): the tail node of the linked stack
+        size (int): the current size of the stack
     """
 
     Node = LinkedListMixin.DoublyNode
+    """type: An alias for the correspondent node type."""
 
     def __init__(self):
         super().__init__()
@@ -39,7 +40,7 @@ class LinkedQueue(SizeMixin, CustomQueue[GT]):
         self.tail = None
 
     def push(self, val: GT) -> None:
-        """Push a value into the end of the queue.
+        """Push a value into the open end of the stack.
 
         Args:
             val: the value to push in
@@ -55,27 +56,27 @@ class LinkedQueue(SizeMixin, CustomQueue[GT]):
             self.size += 1
 
     def pop(self) -> Optional[GT]:
-        """Pop a value out from the start of the queue.
+        """Pop a value out from the open end of the stack.
 
         Returns:
-            The popped value or `None` if an empty queue
+            The popped value or `None` if an empty stack
         """
         if self.size:
-            val = self.head.val
-            self.head = self.head.next
-            if self.head:
-                self.head.prev = None
+            val = self.tail.val
+            self.tail = self.tail.prev
+            if self.tail:
+                self.tail.next = None
             else:
-                self.tail = None
+                self.head = None
             self.size -= 1
             return val
         return None
 
     def traverse(self) -> Sequence[GT]:
-        """Traverse all values in the queue and return as a Python `list`.
+        """Traverse all values in the stack and return as a Python `list`.
 
         Returns:
-            A Python `list` containing all values in the queue
+            A Python `list` containing all values in the stack
         """
         list_ = []
         node = self.head

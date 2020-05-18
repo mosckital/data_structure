@@ -17,13 +17,14 @@ from .array.dynamic_array import DynamicArray
 from .linked_list.custom_linked_list import LinkedListMixin
 from .linked_list.singly_linked_list import SinglyLinkedList
 from .linked_list.doubly_linked_list import DoublyLinkedList
+# abstract base classes for stack and queue
+from .stack_queue.custom_stack_queue import CustomStackQueue
+from .stack_queue.custom_stack_queue import CustomStack, CustomQueue
 # stack
-from .queue_stack.custom_stack import CustomStack
-from .queue_stack.linked_stack import LinkedStack
-from .queue_stack.array_stack import ArrayStack
-from .queue_stack.queued_stack import QueuedStack
+from .stack_queue.linked_stack import LinkedStack
+from .stack_queue.array_stack import ArrayStack
+from .stack_queue.queued_stack import QueuedStack
 # queue
-from .queue_stack.custom_queue import CustomQueue
-from .queue_stack.linked_queue import LinkedQueue
-from .queue_stack.array_queue import ArrayQueue
-from .queue_stack.stacked_queue import StackedQueue
+from .stack_queue.linked_queue import LinkedQueue
+from .stack_queue.array_queue import ArrayQueue
+from .stack_queue.stacked_queue import StackedQueue
