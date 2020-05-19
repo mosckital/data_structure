@@ -1,22 +1,24 @@
 """The abstract base class for the custom implementations of a binary tree."""
 from __future__ import annotations
 from typing import TypeVar, Generic, Sequence, Union
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from data_structures.sequence import LinkedQueue, LinkedStack
+from .tree import Tree
 
 
 GT = TypeVar('GT')
-"""type: The generic type to represent the element type of the binary tree,"""
+"""type: The generic type to represent the element type of the binary tree."""
 
 
-class BinaryTree(Generic[GT], ABC):
+class BinaryTreeNode(Generic[GT], Tree[GT]):
     """The ABC for all custom implementations of a binary tree"""
 
-    def __init__(self, val: GT):
-        self.val = val
+    @property
+    def children(self) -> Sequence[BinaryTreeNode[GT]]:
+        return [self.left, self.right]
 
     @classmethod
-    def from_list_repr(cls, list_repr: Sequence[GT]) -> BinaryTree[GT]:
+    def from_list_repr(cls, list_repr: Sequence[GT]) -> BinaryTreeNode[GT]:
         """Construct a binary tree from its list representation.
 
         The list representation is the Breadth First Search representation of a
@@ -29,7 +31,8 @@ class BinaryTree(Generic[GT], ABC):
             list_repr: the list representation to construct from
 
         Returns:
-            The constructed binary tree, an instance of a subclass of BinaryTree
+            The constructed binary tree, an instance of a subclass of
+            BinaryTreeNode
         """
         # the empty tree case
         if not list_repr or list_repr[0] is None:
@@ -59,7 +62,7 @@ class BinaryTree(Generic[GT], ABC):
 
     @property
     @abstractmethod
-    def left(self) -> BinaryTree[GT]:
+    def left(self) -> BinaryTreeNode[GT]:
         """Get the left child node.
 
         Returns:
@@ -77,7 +80,7 @@ class BinaryTree(Generic[GT], ABC):
 
     @property
     @abstractmethod
-    def right(self) -> BinaryTree[GT]:
+    def right(self) -> BinaryTreeNode[GT]:
         """Get the right child node.
 
         Returns:
@@ -141,7 +144,7 @@ class BinaryTree(Generic[GT], ABC):
             The level-order traverse of the binary tree
         """
         # use a queue for the breadth first traverse
-        queue = LinkedQueue[BinaryTree[GT]]()
+        queue = LinkedQueue[BinaryTreeNode[GT]]()
         queue.push(self)
         traverse = []
         while not queue.is_empty():
@@ -160,7 +163,7 @@ class BinaryTree(Generic[GT], ABC):
             The pre-order traverse of the binary tree
         """
         # use a stack for the depth first traverse
-        stack = LinkedStack[BinaryTree[GT]]()
+        stack = LinkedStack[BinaryTreeNode[GT]]()
         list_ = []
         stack.push(self)
         while not stack.is_empty():
@@ -182,7 +185,7 @@ class BinaryTree(Generic[GT], ABC):
             The in-order traverse of the binary tree
         """
         # use a stack for the depth first traverse
-        stack = LinkedStack[Union[BinaryTree[GT], GT]]()
+        stack = LinkedStack[Union[BinaryTreeNode[GT], GT]]()
         list_ = []
         stack.push(self)
         while not stack.is_empty():
@@ -190,7 +193,7 @@ class BinaryTree(Generic[GT], ABC):
             # pre order: left - value - right
             # so treated in: right - value - left
             node = stack.pop()
-            if isinstance(node, BinaryTree):
+            if isinstance(node, BinaryTreeNode):
                 if node.right:
                     stack.push(node.right)
                 stack.push(node.val)
@@ -207,7 +210,7 @@ class BinaryTree(Generic[GT], ABC):
             The post-order traverse of the binary tree
         """
         # use a stack for the depth first traverse
-        stack = LinkedStack[Union[BinaryTree[GT], GT]]()
+        stack = LinkedStack[Union[BinaryTreeNode[GT], GT]]()
         list_ = []
         stack.push(self)
         while not stack.is_empty():
@@ -215,7 +218,7 @@ class BinaryTree(Generic[GT], ABC):
             # pre order: left - right - value
             # so treated in: value - right - left
             node = stack.pop()
-            if isinstance(node, BinaryTree):
+            if isinstance(node, BinaryTreeNode):
                 stack.push(node.val)
                 if node.right:
                     stack.push(node.right)
@@ -224,3 +227,7 @@ class BinaryTree(Generic[GT], ABC):
             else:
                 list_.append(node)
         return list_
+
+
+BinaryTree = BinaryTreeNode
+"""type: type alias for a binary tree, as a tree is represented by its root"""
