@@ -1,24 +1,28 @@
-"""The abstract base class for the custom implementations of all tree type data
-structures.
+"""The abstract base classes for a general tree and a general tree node.
 """
 from __future__ import annotations
-from typing import TypeVar, Generic, Sequence
+from typing import TypeVar, Generic, Sequence, Union
 from abc import ABC, abstractmethod
+from ..sequence import LinkedStack, LinkedQueue
 
 
 GT = TypeVar('GT')
-"""type: The generic type to represent the element type of the binary tree."""
+"""type: The generic type to represent the element type of the general tree."""
 
 
 class TreeNode(Generic[GT], ABC):
-    # pylint: disable=too-few-public-methods
-    """The abstract base class for all different kinds of a tree. This ABC only
-    defines two properties, the stored value and all the children nodes in a
-    list.
+    """The abstract base class for the nodes of a general tree.
+
+    Attributes:
+        val (T): the stored value of type `T`
+        children (Sequence[GT]): all the child nodes in a sequence
     """
 
     def __init__(self, val: GT):
         self.val = val
+
+    def __bool__(self):
+        return self is not None
 
     @property
     @abstractmethod
@@ -29,5 +33,119 @@ class TreeNode(Generic[GT], ABC):
             All the children nodes in a list
         """
 
-Tree = TreeNode
-"""type: type alias for a general tree, as a tree is represented by its root"""
+    def pre_order_traverse_recursive(self) -> Sequence[GT]:
+        """Get the pre-order traverse of the node and all its sub nodes,
+        recursively, by a depth first search.
+
+        Returns:
+            The pre-order traverse
+        """
+        ret = [self.val]
+        for c in self.children:
+            ret.extend(c.pre_order_traverse_recursive())
+        return ret
+
+    def post_order_traverse_recursive(self) -> Sequence[GT]:
+        """Get the post-order traverse of the node and all its sub nodes,
+        recursively, by a depth first search.
+
+        Returns:
+            The post-order traverse
+        """
+        ret = []
+        for c in self.children:
+            ret.extend(c.post_order_traverse_recursive())
+        ret.append(self.val)
+        return ret
+
+
+class Tree(Generic[GT], ABC):
+    """The abstract base class for a general tree.
+
+    Attributes:
+        root (TreeNode[T]): the root node of the tree
+    """
+
+    def __init__(self):
+        self.root: TreeNode[GT] = None
+
+    def __bool__(self):
+        return self.root is not None
+
+    def pre_order_traverse_iterative(self) -> Sequence[GT]:
+        """Get the pre-order traverse of the tree, iteratively, by a depth first
+        search using a stack.
+
+        Returns:
+            The pre-order traverse
+        """
+        if not self.root:
+            return []
+        ret = []
+        stack = LinkedStack[TreeNode[GT]]()
+        stack.push(self.root)
+        while not stack.is_empty():
+            node = stack.pop()
+            ret.append(node.val)
+            for c in node.children[::-1]:
+                stack.push(c)
+        return ret
+
+    def post_order_traverse_iterative(self) -> Sequence[GT]:
+        """Get the post-order traverse of the tree, iteratively, by a depth
+        first search using a stack.
+
+        Returns:
+            The post-order traverse
+        """
+        if not self.root:
+            return []
+        ret = []
+        stack = LinkedStack[Union[TreeNode[GT], GT]]()
+        stack.push(self.root)
+        while not stack.is_empty():
+            elm = stack.pop()
+            if isinstance(elm, TreeNode):
+                stack.push(elm.val)
+                for c in elm.children[::-1]:
+                    stack.push(c)
+            else:
+                ret.append(elm)
+        return ret
+
+    def level_order_traverse_iterative(self) -> Sequence[GT]:
+        """Get the level-order traverse of the tree, iteratively, by a breadth
+        first search using a queue.
+
+        Returns:
+            The level-order traverse
+        """
+        if not self.root:
+            return []
+        ret = []
+        queue = LinkedQueue[TreeNode[GT]]()
+        queue.push(self.root)
+        while not queue.is_empty():
+            node = queue.pop()
+            ret.append(node.val)
+            for c in node.children:
+                queue.push(c)
+        return ret
+
+    def pre_order_traverse_recursive(self) -> Sequence[GT]:
+        """Get the pre-order traverse of the tree, recursively, by a recursive
+        depth first search starting from the root node.
+
+        Returns:
+            The pre-order traverse
+        """
+        return self.root.pre_order_traverse_recursive()
+
+    def post_order_traverse_recursive(self) -> Sequence[GT]:
+        """Get the post-order traverse of the tree, recursively, by a recursive
+        depth first search starting from the root node.
+
+        Returns:
+            The post-order traverse
+        """
+        return self.root.post_order_traverse_recursive()

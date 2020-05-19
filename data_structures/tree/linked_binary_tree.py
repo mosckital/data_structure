@@ -5,19 +5,20 @@ using linked nodes. The implementation does not use too much Python's language
 advantages and may look dumb. This is by purpose because it only serves as an
 data structure exercise and has no practical usage.
 """
-from typing import TypeVar
-from .binary_tree import BinaryTree
+from __future__ import annotations
+from typing import TypeVar, Sequence
+from .binary_tree import BinaryTree, BinaryTreeNode
 
 
 GT = TypeVar('GT')
 """type: The generic type to represent the element type of the binary tree,"""
 
 
-class LinkedBinaryTree(BinaryTree[GT]):
+class LinkedBinaryTreeNode(BinaryTreeNode[GT]):
     """
-    `LinkedBinaryTree[T](val)` -> a single node binary tree based on linked
-        nodes for values of type `T`, which has `val` as the value of the root
-        node and has no child node.
+    `LinkedBinaryTreeNode[T](val)` -> a single node in a linked-list-based
+        binary tree for values of type `T`, which has `val` as the stored value
+        of the node and has no child node.
 
     This is a custom implementation of a binary tree based on linked nodes for
     learning purpose.
@@ -27,8 +28,8 @@ class LinkedBinaryTree(BinaryTree[GT]):
 
     Attributes:
         val (T): the value of the node
-        left (LinkedBinaryTree[T]): the left child node
-        right (LinkedBinaryTree[T]): the right child node
+        left (LinkedBinaryTreeNode[T]): the left child node
+        right (LinkedBinaryTreeNode[T]): the right child node
     """
 
     def __init__(self, val: GT):
@@ -46,7 +47,7 @@ class LinkedBinaryTree(BinaryTree[GT]):
 
     @left.setter
     def left(self, val: GT) -> None:
-        self._left = LinkedBinaryTree(val)
+        self._left = LinkedBinaryTreeNode(val)
 
     @property
     def right(self) -> BinaryTree[GT]:
@@ -58,4 +59,18 @@ class LinkedBinaryTree(BinaryTree[GT]):
 
     @right.setter
     def right(self, val: GT) -> None:
-        self._right = LinkedBinaryTree(val)
+        self._right = LinkedBinaryTreeNode(val)
+
+
+class LinkedBinaryTree(BinaryTree[GT]):
+    """The custom implementation of a binary tree based on a linked list.
+
+    Attributes:
+        root (LinkedBinaryTreeNode[T]): the root node of the binary tree
+    """
+
+    @staticmethod
+    def from_list_repr(list_repr: Sequence[GT]) -> LinkedBinaryTree[GT]:
+        tree = LinkedBinaryTree[GT]()
+        tree.root = LinkedBinaryTreeNode.from_list_repr(list_repr)
+        return tree
