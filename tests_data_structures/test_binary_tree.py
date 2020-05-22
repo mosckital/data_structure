@@ -48,16 +48,17 @@ class TestBinaryTree():
         """Test the correctness with a randomly generated tree."""
         ref = tree(height=height)
         target = tree_cls.from_list_repr(ref.values)
+        assert target.list_repr == ref.values
         TestBinaryTree.check_tree_and_sub_tree(target, ref)
 
-    @pytest.mark.parametrize('height', (3, 5))
+    @pytest.mark.parametrize('height', (3,))
     @pytest.mark.parametrize('n_checks', (1000,))
     def test_linked_binary_tree(self, height: int, n_checks: int):
         """Test the correctness of LinkedBinaryTree."""
         for _ in range(n_checks):
             self.random_test(LinkedBinaryTree[int], height)
 
-    @pytest.mark.parametrize('height', (3, 5))
+    @pytest.mark.parametrize('height', (3,))
     @pytest.mark.parametrize('n_checks', (1000,))
     def test_array_binary_tree(self, height: int, n_checks: int):
         """Test the correctness of ArrayBinaryTree."""

@@ -19,10 +19,17 @@ class TreeNode(Generic[GT], ABC):
     """
 
     def __init__(self, val: GT):
+        super().__init__()
         self.val = val
 
     def __bool__(self):
         return self is not None
+
+    def __len__(self):
+        length = 1
+        for child in self.children:
+            length += child.__len__()
+        return length
 
     @property
     @abstractmethod
@@ -41,8 +48,8 @@ class TreeNode(Generic[GT], ABC):
             The pre-order traverse
         """
         ret = [self.val]
-        for c in self.children:
-            ret.extend(c.pre_order_traverse_recursive())
+        for child in self.children:
+            ret.extend(child.pre_order_traverse_recursive())
         return ret
 
     def post_order_traverse_recursive(self) -> Sequence[GT]:
@@ -53,8 +60,8 @@ class TreeNode(Generic[GT], ABC):
             The post-order traverse
         """
         ret = []
-        for c in self.children:
-            ret.extend(c.post_order_traverse_recursive())
+        for child in self.children:
+            ret.extend(child.post_order_traverse_recursive())
         ret.append(self.val)
         return ret
 
@@ -67,10 +74,14 @@ class Tree(Generic[GT], ABC):
     """
 
     def __init__(self):
+        super().__init__()
         self.root: TreeNode[GT] = None
 
     def __bool__(self):
         return self.root is not None
+
+    def __len__(self):
+        return self.root.__len__() if self.root else 0
 
     def pre_order_traverse_iterative(self) -> Sequence[GT]:
         """Get the pre-order traverse of the tree, iteratively, by a depth first
@@ -87,8 +98,8 @@ class Tree(Generic[GT], ABC):
         while not stack.is_empty():
             node = stack.pop()
             ret.append(node.val)
-            for c in node.children[::-1]:
-                stack.push(c)
+            for child in node.children[::-1]:
+                stack.push(child)
         return ret
 
     def post_order_traverse_iterative(self) -> Sequence[GT]:
@@ -107,8 +118,8 @@ class Tree(Generic[GT], ABC):
             elm = stack.pop()
             if isinstance(elm, TreeNode):
                 stack.push(elm.val)
-                for c in elm.children[::-1]:
-                    stack.push(c)
+                for child in elm.children[::-1]:
+                    stack.push(child)
             else:
                 ret.append(elm)
         return ret
@@ -128,8 +139,8 @@ class Tree(Generic[GT], ABC):
         while not queue.is_empty():
             node = queue.pop()
             ret.append(node.val)
-            for c in node.children:
-                queue.push(c)
+            for child in node.children:
+                queue.push(child)
         return ret
 
     def pre_order_traverse_recursive(self) -> Sequence[GT]:

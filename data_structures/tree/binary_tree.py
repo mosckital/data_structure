@@ -1,8 +1,8 @@
 """The abstract base class for a binary tree and a binary tree node."""
 from __future__ import annotations
-from typing import TypeVar, Generic, Sequence, Union
+from typing import TypeVar, Generic, Sequence, Union, Optional
 from abc import abstractmethod
-from data_structures.sequence import LinkedStack
+from data_structures.sequence import LinkedStack, LinkedQueue
 from .tree import Tree, TreeNode
 
 
@@ -76,7 +76,7 @@ class BinaryTreeNode(Generic[GT], TreeNode[GT]):
 
     @left.setter
     @abstractmethod
-    def left(self, val: GT) -> None:
+    def left(self, val: Optional[GT]) -> None:
         """Set the left child node with the given value.
 
         Args:
@@ -94,7 +94,7 @@ class BinaryTreeNode(Generic[GT], TreeNode[GT]):
 
     @right.setter
     @abstractmethod
-    def right(self, val: GT) -> None:
+    def right(self, val: Optional[GT]) -> None:
         """Set the right child node with the given value.
 
         Args:
@@ -172,3 +172,39 @@ class BinaryTree(Generic[GT], Tree[GT]):
         Returns:
             The constructed binary tree, an instance of a subclass of BinaryTree
         """
+
+    @property
+    def list_repr(self) -> Sequence[Optional[GT]]:
+        """The list representation of the tree."""
+        # case of empty tree
+        if not self.root:
+            return []
+        # case of not empty tree
+        ret = []
+        queue = LinkedQueue[Optional[BinaryTreeNode[GT]]]()
+        queue.push(self.root)
+        ct_none = 0  # counter for the current number of consecutive None
+        # stop when either queue is empty or the last level is all None
+        while (not queue.is_empty()) and (ct_none * 2 < queue.get_size()):
+            q_size = queue.get_size()
+            # we generate the list representation level by level, as via a
+            # breadth-first-search
+            for _ in range(q_size):
+                elm = queue.pop()
+                if elm:
+                    # we only add the accumulated trailing None into the list
+                    # only if we encounter a non-null value
+                    if ct_none:
+                        ret.extend([None] * ct_none)
+                        ct_none = 0
+                    ret.append(elm.val)
+                    queue.push(elm.left)
+                    queue.push(elm.right)
+                else:
+                    # we need to go deeper for the None node as well because
+                    # these None and their None child may take place in the list
+                    # representation as well
+                    ct_none += 1
+                    queue.push(None)
+                    queue.push(None)
+        return ret
