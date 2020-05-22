@@ -1,26 +1,33 @@
-"""The abstract base class for the custom implementations of a binary tree."""
+"""The abstract base class for a binary tree and a binary tree node."""
 from __future__ import annotations
-from typing import TypeVar, Generic, Sequence, Union
-from abc import ABC, abstractmethod
-from data_structures.sequence import LinkedQueue, LinkedStack
+from typing import TypeVar, Generic, Sequence, Union, Optional
+from abc import abstractmethod
+from data_structures.sequence import LinkedStack, LinkedQueue
+from .tree import Tree, TreeNode
 
 
 GT = TypeVar('GT')
-"""type: The generic type to represent the element type of the binary tree,"""
+"""type: The generic type to represent the element type of the binary tree."""
 
 
-class BinaryTree(Generic[GT], ABC):
-    """The ABC for all custom implementations of a binary tree"""
+class BinaryTreeNode(Generic[GT], TreeNode[GT]):
+    """The abstract base class for the nodes of a binary tree."""
 
-    def __init__(self, val: GT):
-        self.val = val
+    @property
+    def children(self) -> Sequence[BinaryTreeNode[GT]]:
+        ret = []
+        if self.left:
+            ret.append(self.left)
+        if self.right:
+            ret.append(self.right)
+        return ret
 
     @classmethod
-    def from_list_repr(cls, list_repr: Sequence[GT]) -> BinaryTree[GT]:
-        """Construct a binary tree from its list representation.
+    def from_list_repr(cls, list_repr: Sequence[GT]) -> BinaryTreeNode[GT]:
+        """Construct a binary tree node from its list representation.
 
         The list representation is the Breadth First Search representation of a
-        binary tree.
+        binary tree node.
 
         Note:
             The list representation could include None as placeholder.
@@ -29,7 +36,8 @@ class BinaryTree(Generic[GT], ABC):
             list_repr: the list representation to construct from
 
         Returns:
-            The constructed binary tree, an instance of a subclass of BinaryTree
+            The constructed binary tree node, an instance of a subclass of
+            BinaryTreeNode
         """
         # the empty tree case
         if not list_repr or list_repr[0] is None:
@@ -59,7 +67,7 @@ class BinaryTree(Generic[GT], ABC):
 
     @property
     @abstractmethod
-    def left(self) -> BinaryTree[GT]:
+    def left(self) -> BinaryTreeNode[GT]:
         """Get the left child node.
 
         Returns:
@@ -68,7 +76,7 @@ class BinaryTree(Generic[GT], ABC):
 
     @left.setter
     @abstractmethod
-    def left(self, val: GT) -> None:
+    def left(self, val: Optional[GT]) -> None:
         """Set the left child node with the given value.
 
         Args:
@@ -77,7 +85,7 @@ class BinaryTree(Generic[GT], ABC):
 
     @property
     @abstractmethod
-    def right(self) -> BinaryTree[GT]:
+    def right(self) -> BinaryTreeNode[GT]:
         """Get the right child node.
 
         Returns:
@@ -86,25 +94,12 @@ class BinaryTree(Generic[GT], ABC):
 
     @right.setter
     @abstractmethod
-    def right(self, val: GT) -> None:
+    def right(self, val: Optional[GT]) -> None:
         """Set the right child node with the given value.
 
         Args:
             val: the value to set in the right child node
         """
-
-    def pre_order_traverse_recursive(self) -> Sequence[GT]:
-        """Get the pre-order traverse of the binary tree, recursively.
-
-        Returns:
-            The pre-order traverse of the binary tree
-        """
-        list_ = [self.val]
-        if self.left:
-            list_.extend(self.left.pre_order_traverse_recursive())
-        if self.right:
-            list_.extend(self.right.pre_order_traverse_recursive())
-        return list_
 
     def in_order_traverse_recursive(self) -> Sequence[GT]:
         """Get the in-order traverse of the binary tree, recursively.
@@ -120,107 +115,96 @@ class BinaryTree(Generic[GT], ABC):
             list_.extend(self.right.in_order_traverse_recursive())
         return list_
 
-    def post_order_traverse_recursive(self) -> Sequence[GT]:
-        """Get the post-order traverse of the binary tree, recursively.
+class BinaryTree(Generic[GT], Tree[GT]):
+    """The abstract base class for a binary tree.
 
-        Returns:
-            The post-order traverse of the binary tree
-        """
-        list_ = []
-        if self.left:
-            list_.extend(self.left.post_order_traverse_recursive())
-        if self.right:
-            list_.extend(self.right.post_order_traverse_recursive())
-        list_.append(self.val)
-        return list_
-
-    def level_order_traverse_iterative(self) -> Sequence[GT]:
-        """Get the level-order traverse of the binary tree, iteratively.
-
-        Returns:
-            The level-order traverse of the binary tree
-        """
-        # use a queue for the breadth first traverse
-        queue = LinkedQueue[BinaryTree[GT]]()
-        queue.push(self)
-        traverse = []
-        while not queue.is_empty():
-            node = queue.pop()
-            traverse.append(node.val)
-            if node.left:
-                queue.push(node.left)
-            if node.right:
-                queue.push(node.right)
-        return traverse
-
-    def pre_order_traverse_iterative(self) -> Sequence[GT]:
-        """Get the pre-order traverse of the binary tree, iteratively.
-
-        Returns:
-            The pre-order traverse of the binary tree
-        """
-        # use a stack for the depth first traverse
-        stack = LinkedStack[BinaryTree[GT]]()
-        list_ = []
-        stack.push(self)
-        while not stack.is_empty():
-            # treat in inverse order as using a stack
-            # pre order: value - left - right
-            # so treated in: right - left - value
-            node = stack.pop()
-            if node.right:
-                stack.push(node.right)
-            if node.left:
-                stack.push(node.left)
-            list_.append(node.val)
-        return list_
+    Attributes:
+        root (BinaryTreeNode[T]): the root node of the binary tree
+    """
 
     def in_order_traverse_iterative(self) -> Sequence[GT]:
-        """Get the in-order traverse of the binary tree, iteratively.
+        """Get the in-order traverse of the tree, iteratively, by a depth first
+        search using a stack.
 
         Returns:
-            The in-order traverse of the binary tree
+            The in-order traverse
         """
-        # use a stack for the depth first traverse
-        stack = LinkedStack[Union[BinaryTree[GT], GT]]()
-        list_ = []
-        stack.push(self)
+        if not self.root:
+            return []
+        ret = []
+        stack = LinkedStack[Union[BinaryTreeNode[GT], GT]]()
+        stack.push(self.root)
         while not stack.is_empty():
-            # treat in inverse order as using a stack
-            # pre order: left - value - right
-            # so treated in: right - value - left
-            node = stack.pop()
-            if isinstance(node, BinaryTree):
-                if node.right:
-                    stack.push(node.right)
-                stack.push(node.val)
-                if node.left:
-                    stack.push(node.left)
+            elm = stack.pop()
+            if isinstance(elm, BinaryTreeNode):
+                if elm.right:
+                    stack.push(elm.right)
+                stack.push(elm.val)
+                if elm.left:
+                    stack.push(elm.left)
             else:
-                list_.append(node)
-        return list_
+                ret.append(elm)
+        return ret
 
-    def post_order_traverse_iterative(self) -> Sequence[GT]:
-        """Get the post-order traverse of the binary tree, iteratively.
+    def in_order_traverse_recursive(self) -> Sequence[GT]:
+        """Get the in-order traverse of the tree, recursively, by a recursive
+        depth first search starting from the root node.
 
         Returns:
-            The post-order traverse of the binary tree
+            The in-order traverse
         """
-        # use a stack for the depth first traverse
-        stack = LinkedStack[Union[BinaryTree[GT], GT]]()
-        list_ = []
-        stack.push(self)
-        while not stack.is_empty():
-            # treat in inverse order as using a stack
-            # pre order: left - right - value
-            # so treated in: value - right - left
-            node = stack.pop()
-            if isinstance(node, BinaryTree):
-                stack.push(node.val)
-                if node.right:
-                    stack.push(node.right)
-                if node.left:
-                    stack.push(node.left)
-            else:
-                list_.append(node)
-        return list_
+        return self.root.in_order_traverse_recursive()
+
+    @staticmethod
+    @abstractmethod
+    def from_list_repr(list_repr: Sequence[GT]) -> BinaryTree[GT]:
+        """Construct a binary tree from its list representation.
+
+        The list representation is the Breadth First Search representation of a
+        binary tree.
+
+        Note:
+            The list representation could include None as placeholder.
+
+        Args:
+            list_repr: the list representation to construct from
+
+        Returns:
+            The constructed binary tree, an instance of a subclass of BinaryTree
+        """
+
+    @property
+    def list_repr(self) -> Sequence[Optional[GT]]:
+        """The list representation of the tree."""
+        # case of empty tree
+        if not self.root:
+            return []
+        # case of not empty tree
+        ret = []
+        queue = LinkedQueue[Optional[BinaryTreeNode[GT]]]()
+        queue.push(self.root)
+        ct_none = 0  # counter for the current number of consecutive None
+        # stop when either queue is empty or the last level is all None
+        while (not queue.is_empty()) and (ct_none * 2 < queue.get_size()):
+            q_size = queue.get_size()
+            # we generate the list representation level by level, as via a
+            # breadth-first-search
+            for _ in range(q_size):
+                elm = queue.pop()
+                if elm:
+                    # we only add the accumulated trailing None into the list
+                    # only if we encounter a non-null value
+                    if ct_none:
+                        ret.extend([None] * ct_none)
+                        ct_none = 0
+                    ret.append(elm.val)
+                    queue.push(elm.left)
+                    queue.push(elm.right)
+                else:
+                    # we need to go deeper for the None node as well because
+                    # these None and their None child may take place in the list
+                    # representation as well
+                    ct_none += 1
+                    queue.push(None)
+                    queue.push(None)
+        return ret

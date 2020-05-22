@@ -39,17 +39,16 @@ class TestBinaryTree():
 
     @staticmethod
     def check_tree_and_sub_tree(target: BinaryTree, ref: Node):
-        """Check all traverses of all sub trees including itself are correct."""
+        """Check all traverses of the target tree are correct."""
         if target or ref:
             TestBinaryTree.check_all_traverse(target, ref)
-            TestBinaryTree.check_tree_and_sub_tree(target.left, ref.left)
-            TestBinaryTree.check_tree_and_sub_tree(target.right, ref.right)
 
     @staticmethod
     def random_test(tree_cls: Type[BinaryTree], height: int = 3) -> BinaryTree:
         """Test the correctness with a randomly generated tree."""
         ref = tree(height=height)
         target = tree_cls.from_list_repr(ref.values)
+        assert target.list_repr == ref.values
         TestBinaryTree.check_tree_and_sub_tree(target, ref)
 
     @pytest.mark.parametrize('height', (3,))
