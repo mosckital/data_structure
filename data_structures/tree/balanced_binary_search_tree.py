@@ -21,6 +21,7 @@ class BalancedBinarySearchTreeNode(
         BinaryTreeNode[GT],
         ABC,
     ):
+    # pylint: disable=too-many-ancestors
     """The abstract base class for the nodes of a softly balanced binary search
     tree.
     """
@@ -44,6 +45,7 @@ class BalancedBinarySearchTree(
         BinaryTree[GT],
         ABC,
     ):
+    # pylint: disable=too-many-ancestors
     """The abstract base class for a softly balanced binary search tree."""
 
     @abstractmethod
