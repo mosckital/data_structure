@@ -18,3 +18,6 @@ from .array_binary_tree import ArrayBinaryTree
 from .binary_search_tree_mixin import BinarySearchTreeMixin
 from .array_binary_search_tree import ArrayBinarySearchTree
 from .linked_binary_search_tree import LinkedBinarySearchTree
+# balanced binary tree
+from .balanced_binary_search_tree import BalancedBinarySearchTree
+from .red_black_tree import RedBlackTree

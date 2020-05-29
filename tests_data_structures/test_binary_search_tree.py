@@ -17,6 +17,7 @@ import pytest
 from binarytree import build, bst
 from data_structures.tree import BinarySearchTreeMixin, \
     LinkedBinarySearchTree, ArrayBinarySearchTree
+from data_structures.tree import BalancedBinarySearchTree, RedBlackTree
 from .test_binary_tree import TestBinaryTree
 
 
@@ -109,6 +110,8 @@ class TestBinarySearchTree():
             TestBinarySearchTree.check_op_search(target, n_checks)
             TestBinarySearchTree.check_op_insert_delete(target)
             TestBinarySearchTree.check_op_inorder_successor(target)
+            if isinstance(target, BalancedBinarySearchTree):
+                assert target.is_balanced()
 
     @pytest.mark.parametrize('height', (3,))
     @pytest.mark.parametrize('n_checks', (100,))
@@ -121,3 +124,9 @@ class TestBinarySearchTree():
     def test_array_binary_search_tree(self, height: int, n_checks: int):
         """Test the correctness of ArrayBinarySearchTree."""
         self.repeat_checks(ArrayBinarySearchTree, height, n_checks)
+
+    @pytest.mark.parametrize('height', (3,))
+    @pytest.mark.parametrize('n_checks', (100,))
+    def test_red_black_tree(self, height: int, n_checks: int):
+        """Test the correctness of ArrayBinarySearchTree."""
+        self.repeat_checks(RedBlackTree, height, n_checks)
