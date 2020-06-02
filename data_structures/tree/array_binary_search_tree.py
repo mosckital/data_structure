@@ -1,6 +1,6 @@
 """The custom implementation of a binary search tree based on array."""
 from __future__ import annotations
-from typing import TypeVar, Generic, Sequence
+from typing import TypeVar, Generic
 from .binary_tree import BinaryTree
 from .array_binary_tree import ArrayBinaryTree, ArrayBinaryTreeNode
 from .binary_search_tree_mixin import BinarySearchTreeMixin, BinarySearchTreeNodeMixin
@@ -93,9 +93,4 @@ class ArrayBinarySearchTree(
         root (ArrayBinarySearchTreeNode[T]): the root node of the tree
     """
 
-    @staticmethod
-    def from_list_repr(list_repr: Sequence[GT]) -> ArrayBinarySearchTree[GT]:
-        tree = ArrayBinarySearchTree[GT]()
-        # pylint: disable=no-member
-        tree.root = ArrayBinarySearchTreeNode[GT].from_list_repr(list_repr)
-        return tree
+    NODE = ArrayBinarySearchTreeNode

@@ -1,6 +1,6 @@
 """The custom implementation of a binary search tree based on linked nodes."""
 from __future__ import annotations
-from typing import TypeVar, Generic, Optional, Sequence, Union
+from typing import TypeVar, Generic, Optional, Union
 from .binary_tree import BinaryTree
 from .linked_binary_tree import LinkedBinaryTree, LinkedBinaryTreeNode
 from .binary_search_tree_mixin import BinarySearchTreeMixin, BinarySearchTreeNodeMixin
@@ -115,6 +115,8 @@ class LinkedBinarySearchTree(
         root (LinkedBinarySearchTreeNode[T]): the root node of the tree
     """
 
+    NODE = LinkedBinarySearchTreeNode
+
     def insert(self, val):
         # pylint: disable=attribute-defined-outside-init
         if self.root:
@@ -131,9 +133,3 @@ class LinkedBinarySearchTree(
             # root node is the target to delete
             # pylint: disable=attribute-defined-outside-init
             self.root = None
-
-    @staticmethod
-    def from_list_repr(list_repr: Sequence[GT]) -> LinkedBinarySearchTree[GT]:
-        tree = LinkedBinarySearchTree[GT]()
-        tree.root = LinkedBinarySearchTreeNode[GT].from_list_repr(list_repr)
-        return tree

@@ -96,8 +96,4 @@ class ArrayBinaryTree(BinaryTree[GT]):
         root (ArrayBinaryTreeNode[T]): the root node of the binary tree
     """
 
-    @staticmethod
-    def from_list_repr(list_repr: Sequence[GT]) -> ArrayBinaryTree[GT]:
-        tree = ArrayBinaryTree[GT]()
-        tree.root = ArrayBinaryTreeNode.from_list_repr(list_repr)
-        return tree
+    NODE = ArrayBinaryTreeNode

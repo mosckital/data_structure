@@ -6,7 +6,7 @@ advantages and may look dumb. This is by purpose because it only serves as an
 data structure exercise and has no practical usage.
 """
 from __future__ import annotations
-from typing import TypeVar, Sequence, Optional
+from typing import TypeVar, Optional
 from .binary_tree import BinaryTree, BinaryTreeNode
 
 
@@ -75,8 +75,4 @@ class LinkedBinaryTree(BinaryTree[GT]):
         root (LinkedBinaryTreeNode[T]): the root node of the binary tree
     """
 
-    @staticmethod
-    def from_list_repr(list_repr: Sequence[GT]) -> LinkedBinaryTree[GT]:
-        tree = LinkedBinaryTree[GT]()
-        tree.root = LinkedBinaryTreeNode.from_list_repr(list_repr)
-        return tree
+    NODE = LinkedBinaryTreeNode
