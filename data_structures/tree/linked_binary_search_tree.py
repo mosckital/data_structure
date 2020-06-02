@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TypeVar, Generic, Optional, Union
 from .binary_tree import BinaryTree
 from .linked_binary_tree import LinkedBinaryTree, LinkedBinaryTreeNode
-from .binary_search_tree_mixin import BinarySearchTreeMixin, BinarySearchTreeNodeMixin
+from .binary_search_tree import BinarySearchTree, BinarySearchTreeNode
 
 
 GT = TypeVar('GT')
@@ -13,8 +13,8 @@ GT = TypeVar('GT')
 class LinkedBinarySearchTreeNode(
         Generic[GT],
         LinkedBinaryTreeNode[GT],
-        BinarySearchTreeNodeMixin[GT],
-    ):
+        BinarySearchTreeNode[GT],
+    ):  # pylint: disable=too-many-ancestors
     """
     `LinkedBinarySearchTreeNode[T](val)` -> a single node in a linked-list-based
         binary search tree for values of type `T`, which has `val` as the stored
@@ -106,9 +106,9 @@ class LinkedBinarySearchTreeNode(
 
 class LinkedBinarySearchTree(
         Generic[GT],
-        BinarySearchTreeMixin[GT],
         LinkedBinaryTree[GT],
-    ):
+        BinarySearchTree[GT],
+    ):  # pylint: disable=too-many-ancestors
     """The custom implementation of a binary search tree based on linked nodes.
 
     Attributes:
@@ -120,14 +120,14 @@ class LinkedBinarySearchTree(
     def insert(self, val):
         # pylint: disable=attribute-defined-outside-init
         if self.root:
-            super().insert(val)
+            super().insert(val)  # pylint: disable=no-member
         else:
             # create a new root node if the tree is empty
             self.root = LinkedBinarySearchTreeNode[GT].from_list_repr([val])
 
     def delete(self, val):
         try:
-            super().delete(val)
+            super().delete(val)  # pylint: disable=no-member
         except NotImplementedError:
             # delete the root node if the tree only has the root node and the
             # root node is the target to delete

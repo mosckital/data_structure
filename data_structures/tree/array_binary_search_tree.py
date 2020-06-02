@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TypeVar, Generic
 from .binary_tree import BinaryTree
 from .array_binary_tree import ArrayBinaryTree, ArrayBinaryTreeNode
-from .binary_search_tree_mixin import BinarySearchTreeMixin, BinarySearchTreeNodeMixin
+from .binary_search_tree import BinarySearchTree, BinarySearchTreeNode
 
 
 GT = TypeVar('GT')
@@ -13,8 +13,8 @@ GT = TypeVar('GT')
 class ArrayBinarySearchTreeNode(
         Generic[GT],
         ArrayBinaryTreeNode[GT],
-        BinarySearchTreeNodeMixin[GT],
-    ):
+        BinarySearchTreeNode[GT],
+    ):  # pylint: disable=too-many-ancestors
     """
     `ArrayBinarySearchTreeNode[T](val)` -> a single node in an array-based
         binary search tree for values of type `T`, which has `val` as the stored
@@ -85,8 +85,8 @@ class ArrayBinarySearchTreeNode(
 class ArrayBinarySearchTree(
         Generic[GT],
         ArrayBinaryTree[GT],
-        BinarySearchTreeMixin[GT],
-    ):
+        BinarySearchTree[GT],
+    ):  # pylint: disable=too-many-ancestors
     """The custom implementation of a binary search tree based on an array.
 
     Attributes:

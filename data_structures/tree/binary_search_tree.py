@@ -4,13 +4,14 @@ and its tree node.
 from __future__ import annotations
 from typing import TypeVar, Generic, Optional
 from abc import abstractmethod
+from .binary_tree import BinaryTree, BinaryTreeNode
 
 
 GT = TypeVar('GT')
 """type: The generic type to represent the element type of the tree."""
 
 
-class BinarySearchTreeNodeMixin(Generic[GT]):
+class BinarySearchTreeNode(Generic[GT], BinaryTreeNode[GT]):
     """The Mixin class to implement the extra functionalities of a binary search
     tree node."""
 
@@ -69,7 +70,7 @@ class BinarySearchTreeNodeMixin(Generic[GT]):
         """
 
     def inorder_successor_node(self, val: GT) \
-            -> Optional[BinarySearchTreeNodeMixin[GT]]:
+            -> Optional[BinarySearchTreeNode[GT]]:
         """Get the node which stores the in-order successor of the given value.
 
         Notes:
@@ -109,7 +110,7 @@ class BinarySearchTreeNodeMixin(Generic[GT]):
         return successor_node.val if successor_node else None
 
 
-class BinarySearchTreeMixin(Generic[GT]):
+class BinarySearchTree(Generic[GT], BinaryTree[GT]):
     """The Mixin class to implement the extra functionalities of a binary search
     tree."""
 
