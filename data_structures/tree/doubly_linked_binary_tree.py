@@ -5,12 +5,7 @@ using doubly linked nodes. The implementation does not use too much Python's
 language advantages and may look dumb. This is by purpose because it only serves
 as a data structure exercise and has no practical usage.
 """
-from typing import TypeVar
-from .linked_binary_tree import LinkedBinaryTree, LinkedBinaryTreeNode
-
-
-GT = TypeVar('GT')
-"""type: The generic type to represent the element type of the binary tree."""
+from .linked_binary_tree import LinkedBinaryTree, LinkedBinaryTreeNode, GT
 
 
 class DoublyLinkedBinaryTreeNode(LinkedBinaryTreeNode[GT]):

@@ -1,19 +1,13 @@
 """The custom implementation of a binary search tree based on doubly linked
 nodes."""
-from typing import TypeVar
 from .doubly_linked_binary_tree import DoublyLinkedBinaryTree, DoublyLinkedBinaryTreeNode
-from .binary_search_tree import BinarySearchTree, BinarySearchTreeNode
-
-
-GT = TypeVar('GT')
-"""type: The generic type to represent the element type of the tree."""
+from .binary_search_tree import BinarySearchTree, BinarySearchTreeNode, GT
 
 
 class DoublyLinkedBinarySearchTreeNode(
         DoublyLinkedBinaryTreeNode[GT],
         BinarySearchTreeNode[GT],
     ):
-    # pylint: disable=too-many-ancestors
     """
     `DoublyLinkedBinarySearchTreeNode[G](val)` -> a single node in a doubly
         linked node based binary search tree for values of type `T`, which has
@@ -33,6 +27,7 @@ class DoublyLinkedBinarySearchTreeNode(
     """
 
     def _delete_root_val_and_promote_closet_val_to_root(self, side):
+        # pylint: disable=attribute-defined-outside-init
         other = 'right' if side == 'left' else 'left'
         node = getattr(self, side)
         if getattr(node, other):
@@ -53,7 +48,6 @@ class DoublyLinkedBinarySearchTree(
         DoublyLinkedBinaryTree[GT],
         BinarySearchTree[GT],
     ):
-    # pylint: disable=too-many-ancestors
     """The custom implementation of a binary tree based on doubly linked nodes.
 
     Attributes:

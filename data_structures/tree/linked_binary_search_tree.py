@@ -1,19 +1,12 @@
 """The custom implementation of a binary search tree based on linked nodes."""
-from __future__ import annotations
-from typing import TypeVar, Generic
 from .linked_binary_tree import LinkedBinaryTree, LinkedBinaryTreeNode
-from .binary_search_tree import BinarySearchTree, BinarySearchTreeNode
-
-
-GT = TypeVar('GT')
-"""type: The generic type to represent the element type of the tree."""
+from .binary_search_tree import BinarySearchTree, BinarySearchTreeNode, GT
 
 
 class LinkedBinarySearchTreeNode(
-        Generic[GT],
         LinkedBinaryTreeNode[GT],
         BinarySearchTreeNode[GT],
-    ):  # pylint: disable=too-many-ancestors
+    ):
     """
     `LinkedBinarySearchTreeNode[T](val)` -> a single node in a linked-list-based
         binary search tree for values of type `T`, which has `val` as the stored
@@ -32,6 +25,7 @@ class LinkedBinarySearchTreeNode(
     """
 
     def _delete_root_val_and_promote_closet_val_to_root(self, side: str) -> None:
+        # pylint: disable=attribute-defined-outside-init
         other = 'right' if side == 'left' else 'left'
         parent = getattr(self, side)
         node = getattr(parent, other)
@@ -46,10 +40,9 @@ class LinkedBinarySearchTreeNode(
 
 
 class LinkedBinarySearchTree(
-        Generic[GT],
         LinkedBinaryTree[GT],
         BinarySearchTree[GT],
-    ):  # pylint: disable=too-many-ancestors
+    ):
     """The custom implementation of a binary search tree based on linked nodes.
 
     Attributes:

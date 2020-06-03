@@ -6,12 +6,8 @@ advantages and may look dumb. This is by purpose because it only serves as an
 data structure exercise and has no practical usage.
 """
 from __future__ import annotations
-from typing import TypeVar, Optional, Union
-from .binary_tree import BinaryTree, BinaryTreeNode
-
-
-GT = TypeVar('GT')
-"""type: The generic type to represent the element type of the binary tree."""
+from typing import Optional, Union
+from .binary_tree import BinaryTree, BinaryTreeNode, GT
 
 
 class LinkedBinaryTreeNode(BinaryTreeNode[GT]):

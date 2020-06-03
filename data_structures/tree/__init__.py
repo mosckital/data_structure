@@ -10,6 +10,7 @@ All the implemented classes are flatly imported here so that one can easily
 import them by `data_structure.tree.ClassName` instead of adding the module file
 name before the class name in the path
 """
+from .tree import Tree
 # binary tree
 from .binary_tree import BinaryTree
 from .array_binary_tree import ArrayBinaryTree

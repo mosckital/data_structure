@@ -63,10 +63,6 @@ class TestBinaryTree():
     @pytest.mark.parametrize('n_checks', (1000,))
     def test_all_implementations(self, height: int, n_checks: int):
         """Test the correctness of all implementations."""
-        print(type(self))
-        if type(self) != TestBinaryTree:
-            print("Skip test calls from inherited test classes: {0}".format(type(self)))
-            pytest.skip("Skip test calls from inherited test classes.")
         for _type in self._IMPLEMENTED_TYPES:
             for _ in range(n_checks):
                 self.random_test(_type[int], height)

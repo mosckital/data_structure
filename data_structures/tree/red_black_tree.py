@@ -1,19 +1,12 @@
 """The custom implementation of a red-black tree based on linked nodes."""
-from typing import TypeVar, Generic, Sequence
 from .balanced_binary_search_tree import BalancedBinarySearchTreeNode, BalancedBinarySearchTree
-from .linked_binary_search_tree import LinkedBinarySearchTreeNode, LinkedBinarySearchTree
-
-
-GT = TypeVar('GT')
-"""type: The generic type to represent the element type of the tree."""
+from .linked_binary_search_tree import LinkedBinarySearchTreeNode, LinkedBinarySearchTree, GT
 
 
 class RedBlackTreeNode(
-        Generic[GT],
-        BalancedBinarySearchTreeNode[GT],
         LinkedBinarySearchTreeNode[GT],
-    ):
-    # pylint: disable=too-many-ancestors
+        BalancedBinarySearchTreeNode[GT],
+    ):  # pylint: disable=too-few-public-methods
     """
     `RedBlackTree[T](val, is_red)` -> a single node in a red-black tree based on
         linked nodes for values of type `T`, which has `val` as the stored value
@@ -41,6 +34,7 @@ class RedBlackTreeNode(
         self.is_red = is_red
 
     def is_balanced(self) -> int:
+        # pylint: disable=no-member
         """Check if the sub tree of this node is actually balanced and return
         the number of black nodes on any path to a leaf node.
 
@@ -67,24 +61,19 @@ class RedBlackTreeNode(
 
 
 class RedBlackTree(
-        Generic[GT],
+        LinkedBinarySearchTree[GT],
         BalancedBinarySearchTree[GT],
-        LinkedBinarySearchTree[GT]
-    ):
-    # pylint: disable=too-many-ancestors
+    ):  # pylint: disable=too-few-public-methods
     """The custom implementation of a red-black tree based on linked nodes.
 
     Attributes:
         root (RedBlackTreeNode[T]): the root node of the tree
     """
 
-    @staticmethod
-    def from_list_repr(list_repr: Sequence[GT]) -> RedBlackTree[GT]:
-        tree = RedBlackTree[GT]()
-        tree.root = RedBlackTreeNode.from_list_repr(list_repr)
-        return tree
+    NODE = RedBlackTreeNode
 
     def is_balanced(self):
+        # pylint: disable=no-member
         if self.root and (not self.root.is_red) and self.root.is_balanced():
             return True
         return False

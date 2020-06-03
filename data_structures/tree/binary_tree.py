@@ -1,16 +1,12 @@
 """The abstract base class for a binary tree and a binary tree node."""
 from __future__ import annotations
-from typing import TypeVar, Generic, Sequence, Union, Optional
+from typing import Sequence, Union, Optional
 from abc import abstractmethod
 from data_structures.sequence import LinkedStack, LinkedQueue
-from .tree import Tree, TreeNode
+from .tree import Tree, TreeNode, GT
 
 
-GT = TypeVar('GT')
-"""type: The generic type to represent the element type of the binary tree."""
-
-
-class BinaryTreeNode(Generic[GT], TreeNode[GT]):
+class BinaryTreeNode(TreeNode[GT]):
     """The abstract base class for the nodes of a binary tree."""
 
     @property
@@ -115,7 +111,7 @@ class BinaryTreeNode(Generic[GT], TreeNode[GT]):
             list_.extend(self.right.in_order_traverse_recursive())
         return list_
 
-class BinaryTree(Generic[GT], Tree[GT]):
+class BinaryTree(Tree[GT]):
     """The abstract base class for a binary tree.
 
     Attributes:
