@@ -47,7 +47,7 @@ class ArrayBinaryTreeNode(BinaryTreeNode[GT]):
 
     def _getter(self, idx: int) -> ArrayBinaryTreeNode[GT]:
         if idx < len(self._arr) and self._arr[idx] is not None:
-            return ArrayBinaryTreeNode[GT](self._arr[idx], idx, self._arr)
+            return type(self)[GT](self._arr[idx], idx, self._arr)
         return None
 
     def _setter(self, idx: int, val: Optional[GT]) -> None:
@@ -96,8 +96,4 @@ class ArrayBinaryTree(BinaryTree[GT]):
         root (ArrayBinaryTreeNode[T]): the root node of the binary tree
     """
 
-    @staticmethod
-    def from_list_repr(list_repr: Sequence[GT]) -> ArrayBinaryTree[GT]:
-        tree = ArrayBinaryTree[GT]()
-        tree.root = ArrayBinaryTreeNode.from_list_repr(list_repr)
-        return tree
+    NODE = ArrayBinaryTreeNode

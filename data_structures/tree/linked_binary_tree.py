@@ -6,7 +6,7 @@ advantages and may look dumb. This is by purpose because it only serves as an
 data structure exercise and has no practical usage.
 """
 from __future__ import annotations
-from typing import TypeVar, Sequence, Optional
+from typing import TypeVar, Optional, Union
 from .binary_tree import BinaryTree, BinaryTreeNode
 
 
@@ -37,6 +37,22 @@ class LinkedBinaryTreeNode(BinaryTreeNode[GT]):
         self._left = None
         self._right = None
 
+    def _assign_child(
+            self,
+            val: Union[Optional[LinkedBinaryTreeNode[GT]], GT],
+            child_name: str
+        ) -> None:
+        if val is not None:
+            # use type() here as the actual type could be a subclass
+            if isinstance(val, type(self)):
+                # if a node instead of a value is passed in, assign the node to
+                # the left child directly
+                setattr(self, child_name, val)
+            else:
+                setattr(self, child_name, type(self)[GT](val))
+        else:
+            setattr(self, child_name, None)
+
     @property
     def left(self) -> LinkedBinaryTreeNode[GT]:
         """The left child node.
@@ -46,11 +62,8 @@ class LinkedBinaryTreeNode(BinaryTreeNode[GT]):
         return self._left
 
     @left.setter
-    def left(self, val: Optional[GT]) -> None:
-        if val is not None:
-            self._left = LinkedBinaryTreeNode(val)
-        else:
-            self._left = None
+    def left(self, val: Union[Optional[LinkedBinaryTreeNode[GT]], GT]) -> None:
+        self._assign_child(val, '_left')
 
     @property
     def right(self) -> LinkedBinaryTreeNode[GT]:
@@ -61,11 +74,8 @@ class LinkedBinaryTreeNode(BinaryTreeNode[GT]):
         return self._right
 
     @right.setter
-    def right(self, val: Optional[GT]) -> None:
-        if val is not None:
-            self._right = LinkedBinaryTreeNode(val)
-        else:
-            self._right = None
+    def right(self, val: Union[Optional[LinkedBinaryTreeNode[GT]], GT]) -> None:
+        self._assign_child(val, '_right')
 
 
 class LinkedBinaryTree(BinaryTree[GT]):
@@ -75,8 +85,4 @@ class LinkedBinaryTree(BinaryTree[GT]):
         root (LinkedBinaryTreeNode[T]): the root node of the binary tree
     """
 
-    @staticmethod
-    def from_list_repr(list_repr: Sequence[GT]) -> LinkedBinaryTree[GT]:
-        tree = LinkedBinaryTree[GT]()
-        tree.root = LinkedBinaryTreeNode.from_list_repr(list_repr)
-        return tree
+    NODE = LinkedBinaryTreeNode

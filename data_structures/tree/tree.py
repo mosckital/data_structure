@@ -22,9 +22,6 @@ class TreeNode(Generic[GT], ABC):
         super().__init__()
         self.val = val
 
-    def __bool__(self):
-        return self is not None
-
     def __len__(self):
         length = 1
         for child in self.children:
@@ -82,6 +79,9 @@ class Tree(Generic[GT], ABC):
 
     def __len__(self):
         return self.root.__len__() if self.root else 0
+
+    NODE = TreeNode
+    """The alias for the type of the node used in the tree."""
 
     def pre_order_traverse_iterative(self) -> Sequence[GT]:
         """Get the pre-order traverse of the tree, iteratively, by a depth first
