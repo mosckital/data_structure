@@ -1,7 +1,6 @@
 """The custom implementation of a binary search tree based on array."""
 from __future__ import annotations
 from typing import TypeVar, Generic
-from .binary_tree import BinaryTree
 from .array_binary_tree import ArrayBinaryTree, ArrayBinaryTreeNode
 from .binary_search_tree import BinarySearchTree, BinarySearchTreeNode
 
@@ -37,11 +36,6 @@ class ArrayBinarySearchTreeNode(
         left (ArrayBinaryTreeNode[T]): the left child node
         right (ArrayBinaryTreeNode[T]): the right child node
     """
-
-    def _getter(self, idx: int) -> BinaryTree[GT]:
-        if idx < len(self._arr) and self._arr[idx] is not None:
-            return ArrayBinarySearchTreeNode[GT](self._arr[idx], idx, self._arr)
-        return None
 
     def delete(self, val):
         # case to potentially delete the value in the left child tree

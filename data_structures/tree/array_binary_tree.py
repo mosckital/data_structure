@@ -47,7 +47,7 @@ class ArrayBinaryTreeNode(BinaryTreeNode[GT]):
 
     def _getter(self, idx: int) -> ArrayBinaryTreeNode[GT]:
         if idx < len(self._arr) and self._arr[idx] is not None:
-            return ArrayBinaryTreeNode[GT](self._arr[idx], idx, self._arr)
+            return type(self)[GT](self._arr[idx], idx, self._arr)
         return None
 
     def _setter(self, idx: int, val: Optional[GT]) -> None:

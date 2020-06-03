@@ -1,7 +1,6 @@
 """The custom implementation of a binary search tree based on linked nodes."""
 from __future__ import annotations
-from typing import TypeVar, Generic, Optional, Union
-from .binary_tree import BinaryTree
+from typing import TypeVar, Generic
 from .linked_binary_tree import LinkedBinaryTree, LinkedBinaryTreeNode
 from .binary_search_tree import BinarySearchTree, BinarySearchTreeNode
 
@@ -31,46 +30,6 @@ class LinkedBinarySearchTreeNode(
         left (LinkedBinaryTreeNode[T]): the left child node
         right (LinkedBinaryTreeNode[T]): the right child node
     """
-
-    @property
-    def left(self) -> BinaryTree[GT]:
-        """The left child node.
-
-        Just pass in the value of type `GT` instead of a node for assignment.
-        """
-        return self._left
-
-    @left.setter
-    def left(self, val: Union[Optional[LinkedBinarySearchTreeNode[GT]], GT]) -> None:
-        if val is not None:
-            if isinstance(val, LinkedBinarySearchTreeNode):
-                # if a node instead of a value is passed in, assign the node to
-                # the left child directly
-                self._left = val
-            else:
-                self._left = LinkedBinarySearchTreeNode(val)
-        else:
-            self._left = None
-
-    @property
-    def right(self) -> BinaryTree[GT]:
-        """The right child node.
-
-        Just pass in the value of type `GT` instead of a node for assignment.
-        """
-        return self._right
-
-    @right.setter
-    def right(self, val: Union[Optional[LinkedBinarySearchTreeNode[GT]], GT]) -> None:
-        if val is not None:
-            if isinstance(val, LinkedBinarySearchTreeNode):
-                # if a node instead of a value is passed in, assign the node to
-                # the right child directly
-                self._right = val
-            else:
-                self._right = LinkedBinarySearchTreeNode(val)
-        else:
-            self._right = None
 
     def delete(self, val):
         # pylint: disable=attribute-defined-outside-init, access-member-before-definition
@@ -116,20 +75,3 @@ class LinkedBinarySearchTree(
     """
 
     NODE = LinkedBinarySearchTreeNode
-
-    def insert(self, val):
-        # pylint: disable=attribute-defined-outside-init
-        if self.root:
-            super().insert(val)  # pylint: disable=no-member
-        else:
-            # create a new root node if the tree is empty
-            self.root = LinkedBinarySearchTreeNode[GT].from_list_repr([val])
-
-    def delete(self, val):
-        try:
-            super().delete(val)  # pylint: disable=no-member
-        except NotImplementedError:
-            # delete the root node if the tree only has the root node and the
-            # root node is the target to delete
-            # pylint: disable=attribute-defined-outside-init
-            self.root = None
