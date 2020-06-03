@@ -55,7 +55,6 @@ class BinarySearchTreeNode(Generic[GT], BinaryTreeNode[GT]):
             return self.right.insert(val)
         return False
 
-    @abstractmethod
     def delete(self, val: GT) -> bool:
         """To delete a value from the sub tree of this node.
 
@@ -68,6 +67,30 @@ class BinarySearchTreeNode(Generic[GT], BinaryTreeNode[GT]):
         Returns:
             `True` if deleted or `False` otherwise
         """
+        # case to potentially delete the value in the left child tree
+        if val < self.val:
+            return self.left.delete(val) if self.left else False
+        # case to potentially delete the value in the right child tree
+        if val > self.val:
+            return self.right.delete(val) if self.right else False
+        # case to delete the root node
+        if self.right:
+            # if there is value larger than the value of the root node, find the
+            # successor value, delete its node and reassign the value to root
+            self._delete_root_val_and_promote_closet_val_to_root('right')
+        elif self.left:
+            # if there is no value larger than the value of the root, but value
+            # smaller, find the largest one of the smaller values, delete its
+            # node and reassign the value to root
+            self._delete_root_val_and_promote_closet_val_to_root('left')
+        else:
+            # case of no child node, so to delete the root node
+            raise NotImplementedError('Cannot delete a node from itself!')
+        return True
+
+    @abstractmethod
+    def _delete_root_val_and_promote_closet_val_to_root(self, side: str) -> None:
+        pass
 
     def inorder_successor_node(self, val: GT) \
             -> Optional[BinarySearchTreeNode[GT]]:

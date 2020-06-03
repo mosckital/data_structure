@@ -31,36 +31,18 @@ class LinkedBinarySearchTreeNode(
         right (LinkedBinaryTreeNode[T]): the right child node
     """
 
-    def delete(self, val):
-        # pylint: disable=attribute-defined-outside-init, access-member-before-definition
-        if val < self.val:
-            return self.left.delete(val) if self.left else False
-        if val > self.val:
-            return self.right.delete(val) if self.right else False
-        # case val == self.val
-        if self.right:
-            if self.right.left:
-                parent, node = self.right, self.right.left
-                while node.left:
-                    parent, node = node, node.left
-                self.val = node.val
-                parent.left = node.right
-            else:
-                self.val = self.right.val
-                self.right = self.right.right
-        elif self.left:
-            if self.left.right:
-                parent, node = self.left, self.left.right
-                while node.right:
-                    parent, node = node, node.right
-                self.val = node.val
-                parent.right = node.left
-            else:
-                self.val = self.left.val
-                self.left = self.left.left
+    def _delete_root_val_and_promote_closet_val_to_root(self, side: str) -> None:
+        other = 'right' if side == 'left' else 'left'
+        parent = getattr(self, side)
+        node = getattr(parent, other)
+        if node:
+            while getattr(node, other):
+                parent, node = node, getattr(node, other)
+            self.val = node.val
+            setattr(parent, other, getattr(node, side))
         else:
-            raise NotImplementedError('Cannot delete a node from itself!')
-        return True
+            self.val = parent.val
+            setattr(self, side, getattr(parent, side))
 
 
 class LinkedBinarySearchTree(
