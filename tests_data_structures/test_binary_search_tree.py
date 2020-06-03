@@ -15,7 +15,7 @@ from random import randint, choice
 from bisect import bisect
 import pytest
 from binarytree import build, bst
-from data_structures.tree import BinarySearchTreeMixin, \
+from data_structures.tree import BinarySearchTree, \
     LinkedBinarySearchTree, ArrayBinarySearchTree
 from .test_binary_tree import TestBinaryTree
 
@@ -24,7 +24,7 @@ class TestBinarySearchTree():
     """The test suite class for the implementations of a binary search tree."""
 
     @staticmethod
-    def construct_ref_bst_tree(target: BinarySearchTreeMixin):
+    def construct_ref_bst_tree(target: BinarySearchTree):
         """Construct a reference tree identical to the given target tree and
         check if the generated tree is a binary search tree.
 
@@ -42,7 +42,7 @@ class TestBinarySearchTree():
         return tree
 
     @staticmethod
-    def check_op_search(target: BinarySearchTreeMixin, n_random: int):
+    def check_op_search(target: BinarySearchTree, n_random: int):
         """Check the search operation on a binary search tree."""
         tree = TestBinarySearchTree.construct_ref_bst_tree(target)
         assert not target.search(tree.min_node_value - 1)
@@ -55,7 +55,7 @@ class TestBinarySearchTree():
             assert target.search(number) == (number in in_order)
 
     @staticmethod
-    def check_op_insert_delete(target: BinarySearchTreeMixin):
+    def check_op_insert_delete(target: BinarySearchTree):
         """Check the insert and delete operations on a binary search tree."""
         tree = TestBinarySearchTree.construct_ref_bst_tree(target)
         in_order = [node.value for node in tree.inorder]
@@ -73,7 +73,7 @@ class TestBinarySearchTree():
         tree = TestBinarySearchTree.construct_ref_bst_tree(target)
 
     @staticmethod
-    def check_op_inorder_successor(target: BinarySearchTreeMixin):
+    def check_op_inorder_successor(target: BinarySearchTree):
         """Check the inorder_successor operation on a binary search tree."""
         tree = TestBinarySearchTree.construct_ref_bst_tree(target)
         in_order = [node.value for node in tree.inorder]
@@ -94,7 +94,7 @@ class TestBinarySearchTree():
 
     @staticmethod
     def repeat_checks(
-            tree_cls: Type[BinarySearchTreeMixin],
+            tree_cls: Type[BinarySearchTree],
             height: int,
             n_checks: int
         ):

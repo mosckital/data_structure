@@ -1,9 +1,8 @@
 """The custom implementation of a binary search tree based on linked nodes."""
 from __future__ import annotations
-from typing import TypeVar, Generic, Optional, Sequence, Union
-from .binary_tree import BinaryTree
+from typing import TypeVar, Generic
 from .linked_binary_tree import LinkedBinaryTree, LinkedBinaryTreeNode
-from .binary_search_tree_mixin import BinarySearchTreeMixin, BinarySearchTreeNodeMixin
+from .binary_search_tree import BinarySearchTree, BinarySearchTreeNode
 
 
 GT = TypeVar('GT')
@@ -13,8 +12,8 @@ GT = TypeVar('GT')
 class LinkedBinarySearchTreeNode(
         Generic[GT],
         LinkedBinaryTreeNode[GT],
-        BinarySearchTreeNodeMixin[GT],
-    ):
+        BinarySearchTreeNode[GT],
+    ):  # pylint: disable=too-many-ancestors
     """
     `LinkedBinarySearchTreeNode[T](val)` -> a single node in a linked-list-based
         binary search tree for values of type `T`, which has `val` as the stored
@@ -32,108 +31,29 @@ class LinkedBinarySearchTreeNode(
         right (LinkedBinaryTreeNode[T]): the right child node
     """
 
-    @property
-    def left(self) -> BinaryTree[GT]:
-        """The left child node.
-
-        Just pass in the value of type `GT` instead of a node for assignment.
-        """
-        return self._left
-
-    @left.setter
-    def left(self, val: Union[Optional[LinkedBinarySearchTreeNode[GT]], GT]) -> None:
-        if val is not None:
-            if isinstance(val, LinkedBinarySearchTreeNode):
-                # if a node instead of a value is passed in, assign the node to
-                # the left child directly
-                self._left = val
-            else:
-                self._left = LinkedBinarySearchTreeNode(val)
+    def _delete_root_val_and_promote_closet_val_to_root(self, side: str) -> None:
+        other = 'right' if side == 'left' else 'left'
+        parent = getattr(self, side)
+        node = getattr(parent, other)
+        if node:
+            while getattr(node, other):
+                parent, node = node, getattr(node, other)
+            self.val = node.val
+            setattr(parent, other, getattr(node, side))
         else:
-            self._left = None
-
-    @property
-    def right(self) -> BinaryTree[GT]:
-        """The right child node.
-
-        Just pass in the value of type `GT` instead of a node for assignment.
-        """
-        return self._right
-
-    @right.setter
-    def right(self, val: Union[Optional[LinkedBinarySearchTreeNode[GT]], GT]) -> None:
-        if val is not None:
-            if isinstance(val, LinkedBinarySearchTreeNode):
-                # if a node instead of a value is passed in, assign the node to
-                # the right child directly
-                self._right = val
-            else:
-                self._right = LinkedBinarySearchTreeNode(val)
-        else:
-            self._right = None
-
-    def delete(self, val):
-        # pylint: disable=attribute-defined-outside-init, access-member-before-definition
-        if val < self.val:
-            return self.left.delete(val) if self.left else False
-        if val > self.val:
-            return self.right.delete(val) if self.right else False
-        # case val == self.val
-        if self.right:
-            if self.right.left:
-                parent, node = self.right, self.right.left
-                while node.left:
-                    parent, node = node, node.left
-                self.val = node.val
-                parent.left = node.right
-            else:
-                self.val = self.right.val
-                self.right = self.right.right
-        elif self.left:
-            if self.left.right:
-                parent, node = self.left, self.left.right
-                while node.right:
-                    parent, node = node, node.right
-                self.val = node.val
-                parent.right = node.left
-            else:
-                self.val = self.left.val
-                self.left = self.left.left
-        else:
-            raise NotImplementedError('Cannot delete a node from itself!')
-        return True
+            self.val = parent.val
+            setattr(self, side, getattr(parent, side))
 
 
 class LinkedBinarySearchTree(
         Generic[GT],
-        BinarySearchTreeMixin[GT],
         LinkedBinaryTree[GT],
-    ):
+        BinarySearchTree[GT],
+    ):  # pylint: disable=too-many-ancestors
     """The custom implementation of a binary search tree based on linked nodes.
 
     Attributes:
         root (LinkedBinarySearchTreeNode[T]): the root node of the tree
     """
 
-    def insert(self, val):
-        # pylint: disable=attribute-defined-outside-init
-        if self.root:
-            super().insert(val)
-        else:
-            # create a new root node if the tree is empty
-            self.root = LinkedBinarySearchTreeNode[GT].from_list_repr([val])
-
-    def delete(self, val):
-        try:
-            super().delete(val)
-        except NotImplementedError:
-            # delete the root node if the tree only has the root node and the
-            # root node is the target to delete
-            # pylint: disable=attribute-defined-outside-init
-            self.root = None
-
-    @staticmethod
-    def from_list_repr(list_repr: Sequence[GT]) -> LinkedBinarySearchTree[GT]:
-        tree = LinkedBinarySearchTree[GT]()
-        tree.root = LinkedBinarySearchTreeNode[GT].from_list_repr(list_repr)
-        return tree
+    NODE = LinkedBinarySearchTreeNode

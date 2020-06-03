@@ -15,6 +15,6 @@ from .binary_tree import BinaryTree
 from .linked_binary_tree import LinkedBinaryTree
 from .array_binary_tree import ArrayBinaryTree
 # binary search tree
-from .binary_search_tree_mixin import BinarySearchTreeMixin
+from .binary_search_tree import BinarySearchTree
 from .array_binary_search_tree import ArrayBinarySearchTree
 from .linked_binary_search_tree import LinkedBinarySearchTree

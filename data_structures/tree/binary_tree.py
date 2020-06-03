@@ -122,6 +122,8 @@ class BinaryTree(Generic[GT], Tree[GT]):
         root (BinaryTreeNode[T]): the root node of the binary tree
     """
 
+    NODE = BinaryTreeNode
+
     def in_order_traverse_iterative(self) -> Sequence[GT]:
         """Get the in-order traverse of the tree, iteratively, by a depth first
         search using a stack.
@@ -155,9 +157,8 @@ class BinaryTree(Generic[GT], Tree[GT]):
         """
         return self.root.in_order_traverse_recursive()
 
-    @staticmethod
-    @abstractmethod
-    def from_list_repr(list_repr: Sequence[GT]) -> BinaryTree[GT]:
+    @classmethod
+    def from_list_repr(cls, list_repr: Sequence[GT]) -> BinaryTree[GT]:
         """Construct a binary tree from its list representation.
 
         The list representation is the Breadth First Search representation of a
@@ -172,6 +173,9 @@ class BinaryTree(Generic[GT], Tree[GT]):
         Returns:
             The constructed binary tree, an instance of a subclass of BinaryTree
         """
+        tree = cls[GT]()
+        tree.root = cls.NODE[GT].from_list_repr(list_repr)
+        return tree
 
     @property
     def list_repr(self) -> Sequence[Optional[GT]]:

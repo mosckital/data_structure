@@ -4,13 +4,14 @@ and its tree node.
 from __future__ import annotations
 from typing import TypeVar, Generic, Optional
 from abc import abstractmethod
+from .binary_tree import BinaryTree, BinaryTreeNode
 
 
 GT = TypeVar('GT')
 """type: The generic type to represent the element type of the tree."""
 
 
-class BinarySearchTreeNodeMixin(Generic[GT]):
+class BinarySearchTreeNode(Generic[GT], BinaryTreeNode[GT]):
     """The Mixin class to implement the extra functionalities of a binary search
     tree node."""
 
@@ -54,7 +55,6 @@ class BinarySearchTreeNodeMixin(Generic[GT]):
             return self.right.insert(val)
         return False
 
-    @abstractmethod
     def delete(self, val: GT) -> bool:
         """To delete a value from the sub tree of this node.
 
@@ -67,9 +67,33 @@ class BinarySearchTreeNodeMixin(Generic[GT]):
         Returns:
             `True` if deleted or `False` otherwise
         """
+        # case to potentially delete the value in the left child tree
+        if val < self.val:
+            return self.left.delete(val) if self.left else False
+        # case to potentially delete the value in the right child tree
+        if val > self.val:
+            return self.right.delete(val) if self.right else False
+        # case to delete the root node
+        if self.right:
+            # if there is value larger than the value of the root node, find the
+            # successor value, delete its node and reassign the value to root
+            self._delete_root_val_and_promote_closet_val_to_root('right')
+        elif self.left:
+            # if there is no value larger than the value of the root, but value
+            # smaller, find the largest one of the smaller values, delete its
+            # node and reassign the value to root
+            self._delete_root_val_and_promote_closet_val_to_root('left')
+        else:
+            # case of no child node, so to delete the root node
+            raise NotImplementedError('Cannot delete a node from itself!')
+        return True
+
+    @abstractmethod
+    def _delete_root_val_and_promote_closet_val_to_root(self, side: str) -> None:
+        pass
 
     def inorder_successor_node(self, val: GT) \
-            -> Optional[BinarySearchTreeNodeMixin[GT]]:
+            -> Optional[BinarySearchTreeNode[GT]]:
         """Get the node which stores the in-order successor of the given value.
 
         Notes:
@@ -109,9 +133,11 @@ class BinarySearchTreeNodeMixin(Generic[GT]):
         return successor_node.val if successor_node else None
 
 
-class BinarySearchTreeMixin(Generic[GT]):
+class BinarySearchTree(Generic[GT], BinaryTree[GT]):
     """The Mixin class to implement the extra functionalities of a binary search
     tree."""
+
+    NODE = BinarySearchTreeNode
 
     def search(self, val: GT) -> bool:
         """Search if a value is present in the tree.
@@ -124,7 +150,7 @@ class BinarySearchTreeMixin(Generic[GT]):
         """
         return self.root.search(val)
 
-    def insert(self, val: GT) -> None:
+    def insert(self, val: GT) -> bool:
         """To insert a value into the tree.
 
         Notes:
@@ -137,9 +163,13 @@ class BinarySearchTreeMixin(Generic[GT]):
         Returns:
             `True` if inserted or `False` otherwise
         """
-        self.root.insert(val)
+        if self.root:
+            return self.root.insert(val)
+        # create a new root node if the tree is empty
+        self.root = self.NODE[GT].from_list_repr([val])
+        return True
 
-    def delete(self, val: GT) -> None:
+    def delete(self, val: GT) -> bool:
         """To delete a value from the sub tree of this node.
 
         Notes:
@@ -151,7 +181,15 @@ class BinarySearchTreeMixin(Generic[GT]):
         Returns:
             `True` if deleted or `False` otherwise
         """
-        self.root.delete(val)
+        if not self.root:
+            return False
+        try:
+            return self.root.delete(val)
+        except NotImplementedError:
+            # delete the root node if the tree only has the root node and the
+            # root node is the target to delete
+            self.root = None
+            return True
 
     def inorder_successor(self, val: GT) -> Optional[GT]:
         """Get the in-order successor value of the given value.

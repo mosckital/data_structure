@@ -1,9 +1,8 @@
 """The custom implementation of a binary search tree based on array."""
 from __future__ import annotations
-from typing import TypeVar, Generic, Sequence
-from .binary_tree import BinaryTree
+from typing import TypeVar, Generic
 from .array_binary_tree import ArrayBinaryTree, ArrayBinaryTreeNode
-from .binary_search_tree_mixin import BinarySearchTreeMixin, BinarySearchTreeNodeMixin
+from .binary_search_tree import BinarySearchTree, BinarySearchTreeNode
 
 
 GT = TypeVar('GT')
@@ -13,8 +12,8 @@ GT = TypeVar('GT')
 class ArrayBinarySearchTreeNode(
         Generic[GT],
         ArrayBinaryTreeNode[GT],
-        BinarySearchTreeNodeMixin[GT],
-    ):
+        BinarySearchTreeNode[GT],
+    ):  # pylint: disable=too-many-ancestors
     """
     `ArrayBinarySearchTreeNode[T](val)` -> a single node in an array-based
         binary search tree for values of type `T`, which has `val` as the stored
@@ -38,64 +37,27 @@ class ArrayBinarySearchTreeNode(
         right (ArrayBinaryTreeNode[T]): the right child node
     """
 
-    def _getter(self, idx: int) -> BinaryTree[GT]:
-        if idx < len(self._arr) and self._arr[idx] is not None:
-            return ArrayBinarySearchTreeNode[GT](self._arr[idx], idx, self._arr)
-        return None
-
-    def delete(self, val):
-        # case to potentially delete the value in the left child tree
-        if val < self.val:
-            if self.left:
-                return self.left.delete(val)
-            return False
-        # case to potentially delete the value in the right child tree
-        if val > self.val:
-            if self.right:
-                return self.right.delete(val)
-            return False
-        # case to delete the root node
-        if self.right:
-            # if there is value larger than the value of the root node, find the
-            # successor value, delete its node and reassign the value to root
-            node = self
-            while node.right:
-                successor_node = node.right.inorder_successor_node(node.val)
-                node.val = successor_node.val
-                node = successor_node
-            node.val = None
-        elif self.left:
-            # if there is no value larger than the value of the root, but value
-            # smaller, find the largest one of the smaller values, delete its
-            # node and reassign the value to root
-            node = self
-            while node.left:
-                less_max = node.left
-                while less_max.right:
-                    less_max = less_max.right
-                node.val = less_max.val
-                node = less_max
-            node.val = None
-        else:
-            # case of no child node, so to delete the root node
-            self.val = None
-        return True
+    def _delete_root_val_and_promote_closet_val_to_root(self, side: str) -> None:
+        other = 'right' if side == 'left' else 'left'
+        node = self
+        while getattr(node, side):
+            closest = getattr(node, side)
+            while getattr(closest, other):
+                closest = getattr(closest, other)
+            node.val = closest.val
+            node = closest
+        node.val = None
 
 
 class ArrayBinarySearchTree(
         Generic[GT],
         ArrayBinaryTree[GT],
-        BinarySearchTreeMixin[GT],
-    ):
+        BinarySearchTree[GT],
+    ):  # pylint: disable=too-many-ancestors
     """The custom implementation of a binary search tree based on an array.
 
     Attributes:
         root (ArrayBinarySearchTreeNode[T]): the root node of the tree
     """
 
-    @staticmethod
-    def from_list_repr(list_repr: Sequence[GT]) -> ArrayBinarySearchTree[GT]:
-        tree = ArrayBinarySearchTree[GT]()
-        # pylint: disable=no-member
-        tree.root = ArrayBinarySearchTreeNode[GT].from_list_repr(list_repr)
-        return tree
+    NODE = ArrayBinarySearchTreeNode
