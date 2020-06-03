@@ -6,9 +6,8 @@ practical implementations like red black tree, which only requires the level of
 the deepest leaf node shall not bypass the double of the shallowest leaf node.
 """
 from typing import TypeVar, Generic
-from abc import ABC, abstractmethod
-from .binary_tree import BinaryTreeNode, BinaryTree
-from .binary_search_tree_mixin import BinarySearchTreeNodeMixin, BinarySearchTreeMixin
+from abc import abstractmethod
+from .binary_search_tree import BinarySearchTree, BinarySearchTreeNode
 
 
 GT = TypeVar('GT')
@@ -17,9 +16,7 @@ GT = TypeVar('GT')
 
 class BalancedBinarySearchTreeNode(
         Generic[GT],
-        BinarySearchTreeNodeMixin[GT],
-        BinaryTreeNode[GT],
-        ABC,
+        BinarySearchTreeNode[GT],
     ):
     # pylint: disable=too-many-ancestors
     """The abstract base class for the nodes of a softly balanced binary search
@@ -41,14 +38,13 @@ class BalancedBinarySearchTreeNode(
 
 class BalancedBinarySearchTree(
         Generic[GT],
-        BinarySearchTreeMixin[GT],
-        BinaryTree[GT],
-        ABC,
+        BinarySearchTree[GT],
     ):
     # pylint: disable=too-many-ancestors
     """The abstract base class for a softly balanced binary search tree."""
 
-    @abstractmethod
+    NODE = BalancedBinarySearchTreeNode
+
     def is_balanced(self) -> bool:
         """Check if the tree is actually balanced.
 
@@ -59,3 +55,6 @@ class BalancedBinarySearchTree(
         Returns:
             `True` if balanced or `False` otherwise
         """
+        if not self.root:
+            return True
+        return self.root.is_balanced()
