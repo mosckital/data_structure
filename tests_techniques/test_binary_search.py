@@ -3,7 +3,7 @@
 The BinarySearch class only has static methods, which are the implementations of
 binary search algorithms for a list of values and for different cases.
 """
-from bisect import bisect_left
+from bisect import bisect_left, bisect_right
 from random import randint
 import pytest
 from techniques.binary_search import BinarySearch
@@ -94,31 +94,60 @@ class TestBinarySearch():
             self._calc_correct_search_idx,
         )
 
-    REPEAT_ORDERED_LIST_SEARCH_FUNCTIONS = [
+    REPEAT_ORDERED_LIST_SEARCH_LEFT_BOUND_FUNCTIONS = [
         'search_left_bound',
         'search_left_bound_right_exclusive',
         'search_left_bound_left_exclusive',
     ]
     """The list of binary search implementations for an ordered list with all
-    repeating elements.
+    repeating elements and for the first occurrence.
     """
 
     @staticmethod
     def _calc_correct_search_left_bound_idx(_list, val):
         correct_idx = bisect_left(_list, val)
-        if _list[correct_idx] != val:
+        if correct_idx == len(_list) or _list[correct_idx] != val:
             correct_idx = -1
         return correct_idx
 
     @pytest.mark.parametrize('n_diff_elms', (0, 1, 2, 3, 5, 10,))
     @pytest.mark.parametrize('n_checks', (10,))
-    @pytest.mark.parametrize('func', REPEAT_ORDERED_LIST_SEARCH_FUNCTIONS)
+    @pytest.mark.parametrize('func', REPEAT_ORDERED_LIST_SEARCH_LEFT_BOUND_FUNCTIONS)
     def test_search_left_bound(self, n_diff_elms, n_checks, func):
         """Test the correctness of the binary search implementations for an
-        ordered list with all repeating elements.
+        ordered list with all repeating elements and for the first occurrence.
         """
         self._common_test_procedure(
             n_diff_elms, n_checks, func,
             self._generate_repeat_ordered_list,
             self._calc_correct_search_left_bound_idx,
+        )
+
+    REPEAT_ORDERED_LIST_SEARCH_RIGHT_BOUND_FUNCTIONS = [
+        'search_right_bound',
+        'search_right_bound_right_exclusive',
+        'search_right_bound_left_exclusive',
+    ]
+    """The list of binary search implementations for an ordered list with all
+    repeating elements and for the last occurrence.
+    """
+
+    @staticmethod
+    def _calc_correct_search_right_bound_idx(_list, val):
+        correct_idx = bisect_right(_list, val) - 1
+        if correct_idx < 0 or _list[correct_idx] != val:
+            correct_idx = -1
+        return correct_idx
+
+    @pytest.mark.parametrize('n_diff_elms', (0, 1, 2, 3, 5, 10,))
+    @pytest.mark.parametrize('n_checks', (10,))
+    @pytest.mark.parametrize('func', REPEAT_ORDERED_LIST_SEARCH_RIGHT_BOUND_FUNCTIONS)
+    def test_search_right_bound(self, n_diff_elms, n_checks, func):
+        """Test the correctness of the binary search implementations for an
+        ordered list with all repeating elements and for the last occurrence.
+        """
+        self._common_test_procedure(
+            n_diff_elms, n_checks, func,
+            self._generate_repeat_ordered_list,
+            self._calc_correct_search_right_bound_idx,
         )
