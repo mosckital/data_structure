@@ -2,18 +2,14 @@
 and its tree node.
 """
 from __future__ import annotations
-from typing import TypeVar, Generic, Optional
+from typing import Optional
 from abc import abstractmethod
-from .binary_tree import BinaryTree, BinaryTreeNode
+from .binary_tree import BinaryTree, BinaryTreeNode, GT
 
 
-GT = TypeVar('GT')
-"""type: The generic type to represent the element type of the tree."""
-
-
-class BinarySearchTreeNode(Generic[GT], BinaryTreeNode[GT]):
-    """The Mixin class to implement the extra functionalities of a binary search
-    tree node."""
+class BinarySearchTreeNode(BinaryTreeNode[GT]):
+    # pylint: disable=no-member
+    """The abstract base class for the nodes of a binary search tree."""
 
     def search(self, val: GT) -> bool:
         """Search if a value is present in the sub tree of this node.
@@ -133,9 +129,12 @@ class BinarySearchTreeNode(Generic[GT], BinaryTreeNode[GT]):
         return successor_node.val if successor_node else None
 
 
-class BinarySearchTree(Generic[GT], BinaryTree[GT]):
-    """The Mixin class to implement the extra functionalities of a binary search
-    tree."""
+class BinarySearchTree(BinaryTree[GT]):
+    # pylint: disable=attribute-defined-outside-init
+    """The abstract base class for a binary search tree.
+
+    Attributes:
+        root (BinarySearchTreeNode[T]): the root node of the binary tree"""
 
     NODE = BinarySearchTreeNode
 

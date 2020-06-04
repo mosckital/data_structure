@@ -10,7 +10,8 @@ implementation as the reference for the tests.
 from typing import Type
 import pytest
 from binarytree import tree, Node
-from data_structures.tree import BinaryTree, LinkedBinaryTree, ArrayBinaryTree
+from data_structures.tree import BinaryTree, LinkedBinaryTree,\
+    DoublyLinkedBinaryTree, ArrayBinaryTree
 
 
 class TestBinaryTree():
@@ -51,16 +52,22 @@ class TestBinaryTree():
         assert target.list_repr == ref.values
         TestBinaryTree.check_tree_and_sub_tree(target, ref)
 
-    @pytest.mark.parametrize('height', (3,))
-    @pytest.mark.parametrize('n_checks', (1000,))
-    def test_linked_binary_tree(self, height: int, n_checks: int):
-        """Test the correctness of LinkedBinaryTree."""
-        for _ in range(n_checks):
-            self.random_test(LinkedBinaryTree[int], height)
+    _IMPLEMENTED_TYPES = [
+        ArrayBinaryTree,
+        LinkedBinaryTree,
+        DoublyLinkedBinaryTree,
+    ]
+    """The list of types that implement a binary tree."""
 
     @pytest.mark.parametrize('height', (3,))
     @pytest.mark.parametrize('n_checks', (1000,))
-    def test_array_binary_tree(self, height: int, n_checks: int):
-        """Test the correctness of ArrayBinaryTree."""
-        for _ in range(n_checks):
-            self.random_test(ArrayBinaryTree[int], height)
+    def test_all_implementations(self, height: int, n_checks: int):
+        """Test the correctness of all implementations."""
+        for _type in self._IMPLEMENTED_TYPES:
+            for _ in range(n_checks):
+                self.random_test(_type[int], height)
+
+
+CHECK_TREE_AND_SUB_TREE = TestBinaryTree.check_tree_and_sub_tree
+"""The main test function for a binary tree, to be used by the sub test classes.
+"""

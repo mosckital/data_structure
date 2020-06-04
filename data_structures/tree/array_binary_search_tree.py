@@ -1,19 +1,12 @@
 """The custom implementation of a binary search tree based on array."""
-from __future__ import annotations
-from typing import TypeVar, Generic
 from .array_binary_tree import ArrayBinaryTree, ArrayBinaryTreeNode
-from .binary_search_tree import BinarySearchTree, BinarySearchTreeNode
-
-
-GT = TypeVar('GT')
-"""type: The generic type to represent the element type of the tree."""
+from .binary_search_tree import BinarySearchTree, BinarySearchTreeNode, GT
 
 
 class ArrayBinarySearchTreeNode(
-        Generic[GT],
         ArrayBinaryTreeNode[GT],
         BinarySearchTreeNode[GT],
-    ):  # pylint: disable=too-many-ancestors
+    ):
     """
     `ArrayBinarySearchTreeNode[T](val)` -> a single node in an array-based
         binary search tree for values of type `T`, which has `val` as the stored
@@ -50,10 +43,9 @@ class ArrayBinarySearchTreeNode(
 
 
 class ArrayBinarySearchTree(
-        Generic[GT],
         ArrayBinaryTree[GT],
         BinarySearchTree[GT],
-    ):  # pylint: disable=too-many-ancestors
+    ):
     """The custom implementation of a binary search tree based on an array.
 
     Attributes:

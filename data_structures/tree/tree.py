@@ -23,7 +23,7 @@ class TreeNode(Generic[GT], ABC):
         self.val = val
 
     def __len__(self):
-        length = 1
+        length = 1 if self.val is not None else 0
         for child in self.children:
             length += child.__len__()
         return length
@@ -44,7 +44,7 @@ class TreeNode(Generic[GT], ABC):
         Returns:
             The pre-order traverse
         """
-        ret = [self.val]
+        ret = [self.val] if self.val is not None else []
         for child in self.children:
             ret.extend(child.pre_order_traverse_recursive())
         return ret
@@ -59,7 +59,8 @@ class TreeNode(Generic[GT], ABC):
         ret = []
         for child in self.children:
             ret.extend(child.post_order_traverse_recursive())
-        ret.append(self.val)
+        if self.val is not None:
+            ret.append(self.val)
         return ret
 
 
@@ -97,7 +98,8 @@ class Tree(Generic[GT], ABC):
         stack.push(self.root)
         while not stack.is_empty():
             node = stack.pop()
-            ret.append(node.val)
+            if node.val is not None:
+                ret.append(node.val)
             for child in node.children[::-1]:
                 stack.push(child)
         return ret
@@ -117,7 +119,8 @@ class Tree(Generic[GT], ABC):
         while not stack.is_empty():
             elm = stack.pop()
             if isinstance(elm, TreeNode):
-                stack.push(elm.val)
+                if elm.val is not None:
+                    stack.push(elm.val)
                 for child in elm.children[::-1]:
                     stack.push(child)
             else:
@@ -138,7 +141,8 @@ class Tree(Generic[GT], ABC):
         queue.push(self.root)
         while not queue.is_empty():
             node = queue.pop()
-            ret.append(node.val)
+            if node.val is not None:
+                ret.append(node.val)
             for child in node.children:
                 queue.push(child)
         return ret

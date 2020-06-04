@@ -16,8 +16,8 @@ from bisect import bisect
 import pytest
 from binarytree import build, bst
 from data_structures.tree import BinarySearchTree, \
-    LinkedBinarySearchTree, ArrayBinarySearchTree
-from .test_binary_tree import TestBinaryTree
+    LinkedBinarySearchTree, DoublyLinkedBinarySearchTree, ArrayBinarySearchTree
+from .test_binary_tree import CHECK_TREE_AND_SUB_TREE
 
 
 class TestBinarySearchTree():
@@ -35,7 +35,6 @@ class TestBinarySearchTree():
         """
         if not target.root:
             target.insert(randint(-100, 100))
-        print(target.list_repr)
         tree = build(target.list_repr)
         assert tree.is_bst
         assert len(target) == len(tree)
@@ -92,6 +91,8 @@ class TestBinarySearchTree():
             else:
                 assert target.inorder_successor(val) == in_order[ref_idx]
 
+    _N_SEARCH_OP_CHECK = 10
+
     @staticmethod
     def repeat_checks(
             tree_cls: Type[BinarySearchTree],
@@ -105,19 +106,24 @@ class TestBinarySearchTree():
             ref = bst(height=height)
             target = tree_cls.from_list_repr(ref.values)
             assert target.list_repr == ref.values
-            TestBinaryTree.check_tree_and_sub_tree(target, ref)
-            TestBinarySearchTree.check_op_search(target, n_checks)
+            CHECK_TREE_AND_SUB_TREE(target, ref)
+            TestBinarySearchTree.check_op_search(
+                target,
+                TestBinarySearchTree._N_SEARCH_OP_CHECK
+            )
             TestBinarySearchTree.check_op_insert_delete(target)
             TestBinarySearchTree.check_op_inorder_successor(target)
 
-    @pytest.mark.parametrize('height', (3,))
-    @pytest.mark.parametrize('n_checks', (100,))
-    def test_linked_binary_search_tree(self, height: int, n_checks: int):
-        """Test the correctness of LinkedBinarySearchTree."""
-        self.repeat_checks(LinkedBinarySearchTree, height, n_checks)
+    _IMPLEMENTED_TYPES = [
+        ArrayBinarySearchTree,
+        LinkedBinarySearchTree,
+        DoublyLinkedBinarySearchTree,
+    ]
 
     @pytest.mark.parametrize('height', (3,))
-    @pytest.mark.parametrize('n_checks', (100,))
-    def test_array_binary_search_tree(self, height: int, n_checks: int):
-        """Test the correctness of ArrayBinarySearchTree."""
-        self.repeat_checks(ArrayBinarySearchTree, height, n_checks)
+    @pytest.mark.parametrize('n_checks', (10,))
+    def test_all_implementations(self, height: int, n_checks: int):
+        """Test the correctness of all implementations."""
+        for _type in self._IMPLEMENTED_TYPES:
+            for _ in range(n_checks):
+                self.repeat_checks(_type[int], height, n_checks)
