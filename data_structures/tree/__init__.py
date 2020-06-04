@@ -23,4 +23,4 @@ from .linked_binary_search_tree import LinkedBinarySearchTree
 from .doubly_linked_binary_search_tree import DoublyLinkedBinarySearchTree
 # balanced binary tree
 from .balanced_binary_search_tree import BalancedBinarySearchTree
-# from .red_black_tree import RedBlackTree
+from .red_black_tree import RedBlackTree

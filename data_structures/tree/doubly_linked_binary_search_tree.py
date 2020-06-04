@@ -42,6 +42,10 @@ class DoublyLinkedBinarySearchTreeNode(
             setattr(self, side, getattr(node, side))
             if getattr(node, side):
                 getattr(node, side).parent = self
+        # # to actually remove the node from the tree, this may trigger
+        # # consequential clean up action, like in a red black tree
+        # setattr(node, side, None)
+        # node.parent = None
 
 
 class DoublyLinkedBinarySearchTree(

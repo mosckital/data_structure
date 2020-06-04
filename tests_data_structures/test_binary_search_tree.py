@@ -17,7 +17,6 @@ import pytest
 from binarytree import build, bst
 from data_structures.tree import BinarySearchTree, \
     LinkedBinarySearchTree, DoublyLinkedBinarySearchTree, ArrayBinarySearchTree
-from data_structures.tree import BalancedBinarySearchTree#, RedBlackTree
 from .test_binary_tree import CHECK_TREE_AND_SUB_TREE
 
 
@@ -114,8 +113,6 @@ class TestBinarySearchTree():
             )
             TestBinarySearchTree.check_op_insert_delete(target)
             TestBinarySearchTree.check_op_inorder_successor(target)
-            if isinstance(target, BalancedBinarySearchTree):
-                assert target.is_balanced()
 
     _IMPLEMENTED_TYPES = [
         ArrayBinarySearchTree,
@@ -124,7 +121,7 @@ class TestBinarySearchTree():
     ]
 
     @pytest.mark.parametrize('height', (3,))
-    @pytest.mark.parametrize('n_checks', (30,))
+    @pytest.mark.parametrize('n_checks', (10,))
     def test_all_implementations(self, height: int, n_checks: int):
         """Test the correctness of all implementations."""
         for _type in self._IMPLEMENTED_TYPES:

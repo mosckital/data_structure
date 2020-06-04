@@ -106,7 +106,8 @@ class BinaryTreeNode(TreeNode[GT]):
         list_ = []
         if self.left:
             list_.extend(self.left.in_order_traverse_recursive())
-        list_.append(self.val)
+        if self.val is not None:
+            list_.append(self.val)
         if self.right:
             list_.extend(self.right.in_order_traverse_recursive())
         return list_
@@ -137,7 +138,8 @@ class BinaryTree(Tree[GT]):
             if isinstance(elm, BinaryTreeNode):
                 if elm.right:
                     stack.push(elm.right)
-                stack.push(elm.val)
+                if elm.val is not None:
+                    stack.push(elm.val)
                 if elm.left:
                     stack.push(elm.left)
             else:
@@ -191,7 +193,7 @@ class BinaryTree(Tree[GT]):
             # breadth-first-search
             for _ in range(q_size):
                 elm = queue.pop()
-                if elm:
+                if elm and (elm.val is not None):
                     # we only add the accumulated trailing None into the list
                     # only if we encounter a non-null value
                     if ct_none:
